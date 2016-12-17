@@ -1,0 +1,17 @@
+{
+  "name": "electron-poc",
+  "version": "0.1.0",
+  "main": "main.js",
+  "license": "Apache 2.0",
+  "dependencies": {
+    "request-promise": "*",
+    "electron-prebuilt": "*"
+  },
+  "devDependencies": {
+    "child-process": "^1.0.2",
+    "electron": "^1.4.8",
+    "ps-tree": "^1.1.0",
+    "request-promise": "^4.1.1",
+    "tree-kill": "^1.1.0"
+  }
+}

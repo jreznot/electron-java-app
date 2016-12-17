@@ -1,0 +1,57 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
+allprojects {
+    group = 'org.strangeway.fxc'
+    version = '0.1'
+
+    repositories {
+        mavenCentral()
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'application'
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+        }
+        resources {
+            srcDir 'src'
+        }
+    }
+    test {
+        java {
+            srcDir 'test'
+        }
+        resources {
+            srcDir 'test'
+        }
+    }
+}
+
+dependencies {
+    compile 'org.eclipse.jetty:jetty-server:9.3.8.v20160314'
+    compile 'org.eclipse.jetty:jetty-webapp:9.3.8.v20160314'
+    compile 'org.eclipse.jetty.websocket:websocket-server:9.3.8.v20160314'
+
+    compile 'com.vaadin:vaadin-server:7.7.6'
+    compile 'com.vaadin:vaadin-push:7.7.6'
+    compile 'com.vaadin:vaadin-client-compiled:7.7.6'
+    compile 'com.vaadin:vaadin-themes:7.7.6'
+}
+
+applicationName = 'fxc'
+mainClassName = 'org.strangeway.fxc.FxcLauncher'
+
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+
+configurations.archives.artifacts.removeAll {
+    it.file =~ 'tar'
+}
