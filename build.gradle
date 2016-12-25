@@ -36,9 +36,9 @@ sourceSets {
 }
 
 dependencies {
-    compile 'org.eclipse.jetty:jetty-server:9.3.8.v20160314'
-    compile 'org.eclipse.jetty:jetty-webapp:9.3.8.v20160314'
-    compile 'org.eclipse.jetty.websocket:websocket-server:9.3.8.v20160314'
+    compile 'org.eclipse.jetty:jetty-server:9.4.0.v20161208'
+    compile 'org.eclipse.jetty:jetty-webapp:9.4.0.v20161208'
+    compile 'org.eclipse.jetty.websocket:websocket-server:9.4.0.v20161208'
 
     compile 'com.vaadin:vaadin-server:7.7.6'
     compile 'com.vaadin:vaadin-push:7.7.6'

@@ -1,7 +1,6 @@
 package org.strangeway.fxc;
 
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.session.HashSessionManager;
 import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -20,8 +19,7 @@ public final class Launcher {
         ServletContextHandler contextHandler = new ServletContextHandler(null, "/", true, false);
         embeddedServer.setHandler(contextHandler);
 
-        HashSessionManager manager = new HashSessionManager();
-        SessionHandler sessions = new SessionHandler(manager);
+        SessionHandler sessions = new SessionHandler();
         contextHandler.setSessionHandler(sessions);
 
         ServletHolder servletHolder = new ServletHolder(AppServlet.class);
@@ -29,7 +27,7 @@ public final class Launcher {
 
         try {
             embeddedServer.start();
-//            embeddedServer.join();
+            embeddedServer.join();
         } catch (Exception e) {
             System.out.print("Server error:\n" + e.getMessage());
             e.printStackTrace(System.out);
