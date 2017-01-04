@@ -1,16 +1,15 @@
-package org.strangeway.fxc;
+package org.strangeway.electronvaadin;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.strangeway.fxc.server.AppServlet;
+import org.strangeway.electronvaadin.server.AppServlet;
 
 /**
  * @author Yuriy Artamonov
  */
-public final class Launcher {
-
+public class Launcher {
     public static void main(String[] args) {
         System.out.println("Server starting...");
 
@@ -29,7 +28,7 @@ public final class Launcher {
             embeddedServer.start();
             embeddedServer.join();
         } catch (Exception e) {
-            System.out.print("Server error:\n" + e.getMessage());
+            System.out.println("Server error:\n" + e.getMessage());
             e.printStackTrace(System.out);
         }
 

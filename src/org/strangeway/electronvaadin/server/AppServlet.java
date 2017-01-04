@@ -1,8 +1,8 @@
-package org.strangeway.fxc.server;
+package org.strangeway.electronvaadin.server;
 
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.VaadinServlet;
-import org.strangeway.fxc.app.MainUI;
+import org.strangeway.electronvaadin.app.MainUI;
 
 import javax.servlet.annotation.WebServlet;
 
@@ -11,5 +11,5 @@ import javax.servlet.annotation.WebServlet;
  */
 @WebServlet(value = "/*")
 @VaadinServletConfiguration(productionMode = false, ui = MainUI.class)
-public final class AppServlet extends VaadinServlet {
+public class AppServlet extends VaadinServlet {
 }

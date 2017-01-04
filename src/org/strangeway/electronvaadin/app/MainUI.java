@@ -1,4 +1,4 @@
-package org.strangeway.fxc.app;
+package org.strangeway.electronvaadin.app;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.server.VaadinRequest;
@@ -10,7 +10,7 @@ import com.vaadin.ui.themes.ValoTheme;
  * @author Yuriy Artamonov
  */
 @Theme(ValoTheme.THEME_NAME)
-public final class MainUI extends UI {
+public class MainUI extends UI {
     @Override
     protected void init(VaadinRequest request) {
         VerticalLayout layout = new VerticalLayout();

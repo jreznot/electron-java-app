@@ -5,7 +5,7 @@ buildscript {
 }
 
 allprojects {
-    group = 'org.strangeway.fxc'
+    group = 'org.strangeway'
     version = '0.1'
 
     repositories {
@@ -46,8 +46,8 @@ dependencies {
     compile 'com.vaadin:vaadin-themes:7.7.6'
 }
 
-applicationName = 'fxc'
-mainClassName = 'org.strangeway.fxc.FxcLauncher'
+applicationName = 'electron-vaadin'
+mainClassName = 'org.strangeway.electronvaadin.Launcher'
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
