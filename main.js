@@ -26,7 +26,11 @@ app.on('ready', function () {
     let appUrl = 'http://localhost:8080';
 
     var openWindow = function () {
-        mainWindow = new BrowserWindow({width: 1024, height: 768, title: 'TODO List - Electron Vaadin application'});
+        mainWindow = new BrowserWindow({
+            title: 'TODO List - Electron Vaadin application',
+            width: 1024,
+            height: 768
+        });
         mainWindow.setMenu(null);
         mainWindow.loadURL(appUrl);
 
@@ -43,7 +47,7 @@ app.on('ready', function () {
                 console.log('Kill server process');
 
                 var kill = require('tree-kill');
-                kill(serverProcess.pid, 'SIGTERM', function(err) {
+                kill(serverProcess.pid, 'SIGTERM', function (err) {
                     console.log('Server process killed');
 
                     serverProcess = null;
