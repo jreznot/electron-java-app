@@ -27,6 +27,7 @@ Requires
 npm install electron --save-dev
 npm install request-promise --save-dev
 npm install ps-tree --save-dev
+npm install tree-kill --save-dev
 ```
 
 ```

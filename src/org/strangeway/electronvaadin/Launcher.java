@@ -4,14 +4,19 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.strangeway.electronvaadin.server.AppServlet;
 
 /**
  * @author Yuriy Artamonov
  */
 public class Launcher {
+
+    private static final Logger log = LoggerFactory.getLogger(Launcher.class);
+
     public static void main(String[] args) {
-        System.out.println("Server starting...");
+        log.info("Server starting...");
 
         Server embeddedServer = new Server(8080);
 
@@ -28,10 +33,9 @@ public class Launcher {
             embeddedServer.start();
             embeddedServer.join();
         } catch (Exception e) {
-            System.out.println("Server error:\n" + e.getMessage());
-            e.printStackTrace(System.out);
+            log.error("Server error:\n", e);
         }
 
-        System.out.println("Server stopped");
+        log.info("Server stopped");
     }
 }
