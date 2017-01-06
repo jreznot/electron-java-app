@@ -42,6 +42,7 @@ public class MainUI extends UI {
         centerLayout.addComponent(titleLabel);
 
         Button addButton = new Button("Add", FontAwesome.PLUS);
+        addButton.focus();
         addButton.setStyleName(ValoTheme.BUTTON_PRIMARY);
         addButton.addClickListener(event -> {
             Object itemId = tasksGrid.addRow(false, "New task");
@@ -55,6 +56,7 @@ public class MainUI extends UI {
             if (selectedItemId != null) {
                 Container.Indexed ds = tasksGrid.getContainerDataSource();
                 ds.removeItem(selectedItemId);
+                removeButton.setEnabled(false);
             }
         });
 
@@ -145,6 +147,7 @@ public class MainUI extends UI {
         buttonsLayout.setSpacing(true);
 
         Button yesBtn = new Button("Yes", FontAwesome.SIGN_OUT);
+        yesBtn.focus();
         yesBtn.addClickListener(event -> {
             confirmationWindow.close();
             callElectronUiApi(new String[]{"exit"});
