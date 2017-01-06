@@ -6,8 +6,20 @@ var mainWindow = null;
 var serverProcess = null;
 
 // Provide API for web application
-global.callElectronUiApi = function(args){
-    return 'Electron called from web app with args ' + args;
+global.callElectronUiApi = function(args) {
+    console.log('Electron called from web app with args ' + args);
+
+    if (args && args[0] == 'exit') {
+        console.log('Kill server process');
+
+        var kill = require('tree-kill');
+        kill(serverProcess.pid, 'SIGTERM', function (err) {
+            console.log('Server process killed');
+
+            serverProcess = null;
+            mainWindow.close();
+        });
+    }
 };
 
 app.on('window-all-closed', function () {
@@ -38,12 +50,13 @@ app.on('ready', function () {
         });
 
         const menu = new Menu();
+        menu.append(new MenuItem({label: 'File'}));
+        // todo add menu item 'Exit'
         menu.append(new MenuItem({
-            label: 'File', click() {
-                mainWindow.webContents.executeJavaScript("appMenuItemTriggered('Open');");
+            label: 'Help', click() {
+                mainWindow.webContents.executeJavaScript("appMenuItemTriggered('Help');");
             }
         }));
-        menu.append(new MenuItem({label: 'Help'}));
 
         mainWindow.setMenu(menu);
         mainWindow.loadURL(appUrl);
@@ -58,15 +71,7 @@ app.on('ready', function () {
             if (serverProcess) {
                 e.preventDefault();
 
-                console.log('Kill server process');
-
-                var kill = require('tree-kill');
-                kill(serverProcess.pid, 'SIGTERM', function (err) {
-                    console.log('Server process killed');
-
-                    serverProcess = null;
-                    mainWindow.close();
-                });
+                mainWindow.webContents.executeJavaScript("appWindowExit();");
             }
         });
     };
