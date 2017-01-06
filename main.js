@@ -1,9 +1,14 @@
-const {app, BrowserWindow} = require('electron');
+const {app, BrowserWindow, Menu, MenuItem} = require('electron');
 
 // electron.crashReporter.start();
 
 var mainWindow = null;
 var serverProcess = null;
+
+// Provide API for web application
+global.callElectronUiApi = function(args){
+    return 'Electron called from web app with args ' + args;
+};
 
 app.on('window-all-closed', function () {
     app.quit();
@@ -31,10 +36,19 @@ app.on('ready', function () {
             width: 1024,
             height: 768
         });
-        mainWindow.setMenu(null);
+
+        const menu = new Menu();
+        menu.append(new MenuItem({
+            label: 'Open', click() {
+                mainWindow.webContents.executeJavaScript("menuItemTriggered('Open');");
+            }
+        }));
+        menu.append(new MenuItem({label: 'Help'}));
+
+        mainWindow.setMenu(menu);
         mainWindow.loadURL(appUrl);
 
-        // mainWindow.webContents.openDevTools();
+        mainWindow.webContents.openDevTools();
 
         mainWindow.on('closed', function () {
             mainWindow = null;
