@@ -33,14 +33,14 @@ app.on('ready', function () {
     var openWindow = function () {
         mainWindow = new BrowserWindow({
             title: 'TODO List - Electron Vaadin application',
-            width: 1024,
+            width: 500,
             height: 768
         });
 
         const menu = new Menu();
         menu.append(new MenuItem({
-            label: 'Open', click() {
-                mainWindow.webContents.executeJavaScript("menuItemTriggered('Open');");
+            label: 'File', click() {
+                mainWindow.webContents.executeJavaScript("appMenuItemTriggered('Open');");
             }
         }));
         menu.append(new MenuItem({label: 'Help'}));
@@ -48,7 +48,7 @@ app.on('ready', function () {
         mainWindow.setMenu(menu);
         mainWindow.loadURL(appUrl);
 
-        mainWindow.webContents.openDevTools();
+        // mainWindow.webContents.openDevTools();
 
         mainWindow.on('closed', function () {
             mainWindow = null;

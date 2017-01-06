@@ -2,6 +2,7 @@ package org.strangeway.electronvaadin.app;
 
 import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Theme;
+import com.vaadin.server.FontAwesome;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Notification.Type;
@@ -22,7 +23,8 @@ public class MainUI extends UI {
     }
 
     protected void initElectronEndpoint() {
-        getPage().getJavaScript().addFunction("menuItemTriggered", (JavaScriptFunction) arguments -> {
+        JavaScript js = getPage().getJavaScript();
+        js.addFunction("appMenuItemTriggered", arguments -> {
             if (arguments.length() == 1 && arguments.get(0) instanceof JsonString) {
                 String menuId = arguments.get(0).asString();
                 new Notification(
@@ -30,6 +32,10 @@ public class MainUI extends UI {
                         Type.HUMANIZED_MESSAGE
                 ).show(getPage());
             }
+        });
+        js.addFunction("appWindowExit", arguments -> {
+            // todo show confirmation dialog
+            // todo if Yes then call function from Electron UI
         });
     }
 
@@ -39,37 +45,45 @@ public class MainUI extends UI {
         layout.setSizeFull();
 
         VerticalLayout centerLayout = new VerticalLayout();
-        centerLayout.setWidth(300, Unit.PIXELS);
-        centerLayout.setHeightUndefined();
+        centerLayout.setSpacing(true);
+        centerLayout.setWidth(400, Unit.PIXELS);
+        centerLayout.setHeight(100, Unit.PERCENTAGE);
 
+        // todo remove
         Button showButton = new Button("Show value");
-        centerLayout.addComponent(showButton);
-        centerLayout.setComponentAlignment(showButton, Alignment.MIDDLE_RIGHT);
+        showButton.addClickListener((Button.ClickListener) event ->
+                callElectronUiApi(new String[]{"Table value", ""})
+        );
 
-        Table table = new Table("The Brightest Stars");
-        table.setSelectable(true);
-        table.setWidth(100, Unit.PERCENTAGE);
-        table.setHeightUndefined();
+        Label titleLabel = new Label("Active tasks");
+        titleLabel.setStyleName(ValoTheme.LABEL_H1);
+        centerLayout.addComponent(titleLabel);
 
-        table.addContainerProperty("Name", String.class, null);
-        table.addContainerProperty("Mag", Float.class, null);
+        Button addButton = new Button("Add");
+        addButton.setIcon(FontAwesome.PLUS);
+        addButton.setStyleName(ValoTheme.BUTTON_PRIMARY);
 
-        table.addItem(new Object[]{"Canopus", -0.72f}, 2);
-        table.addItem(new Object[]{"Arcturus", -0.04f}, 3);
-        table.addItem(new Object[]{"Alpha Centauri", -0.01f}, 4);
+        Button removeButton = new Button("Remove");
+        removeButton.setIcon(FontAwesome.TRASH_O);
 
-        table.setPageLength(table.size());
-        table.setValue(2);
-        table.setNullSelectionAllowed(false);
+        HorizontalLayout buttonsLayout = new HorizontalLayout();
+        buttonsLayout.setSpacing(true);
+        buttonsLayout.addComponent(addButton);
+        buttonsLayout.addComponent(removeButton);
 
-        centerLayout.addComponent(table);
+        centerLayout.addComponent(buttonsLayout);
+        centerLayout.setComponentAlignment(buttonsLayout, Alignment.MIDDLE_RIGHT);
+
+        Grid grid = new Grid();
+        grid.setSizeFull();
+        grid.setSelectionMode(Grid.SelectionMode.MULTI);
+        grid.addColumn("Summary");
+
+        centerLayout.addComponent(grid);
+        centerLayout.setExpandRatio(grid, 1);
 
         layout.addComponent(centerLayout);
-        layout.setComponentAlignment(centerLayout, Alignment.MIDDLE_CENTER);
-
-        showButton.addClickListener((Button.ClickListener) event ->
-                callElectronUiApi(new String[]{"Table value", String.valueOf(table.getValue())})
-        );
+        layout.setComponentAlignment(centerLayout, Alignment.TOP_CENTER);
 
         setContent(layout);
     }
