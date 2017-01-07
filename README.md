@@ -11,6 +11,13 @@ Java Desktop Application with HTML 5 UI based on Electron and Vaadin
 5. Jetty HTTP Server
 6. Vaadin Framework
 
+## Features
+
+1. Jetty server with Web Sockets enabled
+2. Vaadin UI code in plain Java
+3. Two way communication between Electron and web application using javascript functions
+4. Auto start / stop of server side on application init / exit
+
 ## Try it!
 
 __Note:__ These steps now are relevant to Windows only.
@@ -34,3 +41,5 @@ __Note:__ These steps now are relevant to Windows only.
         > electron-app-package.bat
 
 6. Application will be bundled to `electron-src\electron-vaadin-win32-x64`
+
+![Demo Image](/docs/app-window.png?raw=true "Application Window")
