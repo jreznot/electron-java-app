@@ -36,10 +36,14 @@ __Note:__ These steps now are relevant to Windows only.
 
         > electron-app-debug.bat
         
-5. Build standalone app:
+5. Install electron-packager:
+
+        > npm install electron-packager -g
+        
+6. Build standalone app:
 
         > electron-app-package.bat
 
-6. Application will be bundled to `electron-src\electron-vaadin-win32-x64`
+7. Application will be bundled to `electron-src\electron-vaadin-win32-x64`
 
 ![Demo Image](/docs/app-window.png?raw=true "Application Window")
