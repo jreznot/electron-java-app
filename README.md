@@ -32,11 +32,11 @@ __Note:__ These steps now are relevant to Windows only.
 
         > gradlew installDist
         
-4. Run electron demo script:
+4. Run debug version:
 
         > electron-app-debug.bat
         
-5. Build standalone app
+5. Build standalone app:
 
         > electron-app-package.bat
 
