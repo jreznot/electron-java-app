@@ -6,6 +6,7 @@ import com.vaadin.data.Container;
 import com.vaadin.data.util.converter.StringToBooleanConverter;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import elemental.json.Json;
@@ -19,7 +20,7 @@ import elemental.json.JsonString;
 @Theme(ValoTheme.THEME_NAME)
 public class MainUI extends UI {
 
-    protected Grid tasksGrid;
+    private Grid tasksGrid;
 
     @Override
     protected void init(VaadinRequest request) {
@@ -27,7 +28,7 @@ public class MainUI extends UI {
         initElectronApi();
     }
 
-    protected void initLayout() {
+    private void initLayout() {
         VerticalLayout layout = new VerticalLayout();
         layout.setMargin(true);
         layout.setSizeFull();
@@ -93,13 +94,13 @@ public class MainUI extends UI {
         setContent(layout);
     }
 
-    protected void initElectronApi() {
+    private void initElectronApi() {
         JavaScript js = getPage().getJavaScript();
         js.addFunction("appMenuItemTriggered", arguments -> {
             if (arguments.length() == 1 && arguments.get(0) instanceof JsonString) {
                 String menuId = arguments.get(0).asString();
-                if ("Help".equals(menuId)) {
-                    onMenuHelp();
+                if ("About".equals(menuId)) {
+                    onMenuAbout();
                 } else if ("Exit".equals(menuId)) {
                     onWindowExit();
                 }
@@ -108,7 +109,7 @@ public class MainUI extends UI {
         js.addFunction("appWindowExit", arguments -> onWindowExit());
     }
 
-    protected void callElectronUiApi(String[] args) {
+    private void callElectronUiApi(String[] args) {
         JsonArray paramsArray = Json.createArray();
         int i = 0;
         for (String arg : args) {
@@ -118,11 +119,38 @@ public class MainUI extends UI {
         getPage().getJavaScript().execute("callElectronUiApi(" + paramsArray.toJson() + ")");
     }
 
-    protected void onMenuHelp() {
+    private void onMenuAbout() {
+        Window helpWindow = new Window();
+        helpWindow.setCaption("About");
+        helpWindow.setModal(true);
+        helpWindow.setResizable(false);
 
+        helpWindow.setSizeUndefined();
+
+        VerticalLayout content = new VerticalLayout();
+        content.setSizeUndefined();
+        content.setMargin(true);
+        content.setSpacing(true);
+
+        Label aboutLabel = new Label("Electron+Vaadin Demo\nAuthor: Yuriy Artamonov");
+        aboutLabel.setContentMode(ContentMode.PREFORMATTED);
+        aboutLabel.setSizeUndefined();
+
+        content.addComponent(aboutLabel);
+
+        Button okBtn = new Button("Ok", FontAwesome.CHECK);
+        okBtn.focus();
+        okBtn.addClickListener(event -> helpWindow.close());
+
+        content.addComponent(okBtn);
+        content.setComponentAlignment(okBtn, Alignment.MIDDLE_CENTER);
+
+        helpWindow.setContent(content);
+
+        getUI().addWindow(helpWindow);
     }
 
-    protected void onWindowExit() {
+    private void onWindowExit() {
         if (!getUI().getWindows().isEmpty()) {
             // it seems that confirmation window is already shown
             return;

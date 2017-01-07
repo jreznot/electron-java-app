@@ -1,33 +1,36 @@
-# Electron Java Demo
-Java Desktop Application with HTML 5 UI
+# Electron+Java Demo
 
-Requires
+Java Desktop Application with HTML 5 UI based on Electron and Vaadin
 
-1. nodejs
-2. electron
-3. gradle installDist
-4. start-app.bat
+## Uses
 
-## TODO
+1. Node JS
+2. Electron
+3. Gradle
+4. JDK 8
+5. Jetty HTTP Server
+6. Vaadin Framework
 
-1. Stop by port
-2. Custom menu
-3. Icon
-4. Sending commands from menu
+## Try it!
 
-## STEPS
+__Note:__ These steps now are relevant to Windows only.
 
+1. Download and install `npm` from https://nodejs.org/en/download/
+2. Install required `npm` modules:
 ```
-npm install electron --save-dev
-npm install request-promise --save-dev
-npm install ps-tree --save-dev
-npm install tree-kill --save-dev
-
-npm install electron-packager -g
-
-electron-packger . --no-prune
+> cd electron-src
+> npm install
 ```
-
+3. Build java application:
 ```
-.\node_modules\.bin\electron .
+> gradlew installDist
 ```
+4. Run electron demo script:
+```
+> electron-app-debug.bat
+```
+5. Build standalone app
+```
+> electron-app-package.bat
+```
+6. Application will be bundled to `electron-src\electron-vaadin-win32-x64`

@@ -1,18 +1,16 @@
 const {app, BrowserWindow, Menu, MenuItem} = require('electron');
 
-// electron.crashReporter.start();
-
-var mainWindow = null;
-var serverProcess = null;
+let mainWindow = null;
+let serverProcess = null;
 
 // Provide API for web application
 global.callElectronUiApi = function(args) {
-    console.log('Electron called from web app with args ' + args);
+    console.log('Electron called from web app with args "' + args + '"');
 
     if (args && args[0] == 'exit') {
         console.log('Kill server process');
 
-        var kill = require('tree-kill');
+        const kill = require('tree-kill');
         kill(serverProcess.pid, 'SIGTERM', function (err) {
             console.log('Server process killed');
 
@@ -30,7 +28,7 @@ app.on('ready', function () {
     serverProcess = require('child_process')
         .spawn('cmd.exe', ['/c', 'electron-vaadin.bat'],
             {
-                cwd: './build/install/electron-vaadin/bin'
+                cwd: './electron-vaadin/bin'
             });
 
     serverProcess.stdout.on('data', function (data) {
@@ -39,28 +37,40 @@ app.on('ready', function () {
 
     console.log("Server PID: " + serverProcess.pid);
 
-    var requestPromise = require('request-promise');
+    const requestPromise = require('request-promise');
     let appUrl = 'http://localhost:8080';
 
-    var openWindow = function () {
+    const openWindow = function () {
         mainWindow = new BrowserWindow({
             title: 'TODO List - Electron Vaadin application',
             width: 500,
             height: 768
         });
 
-        const menu = new Menu();
-        menu.append(new MenuItem({label: 'File'}));
-        // todo add menu item 'Exit'
-        menu.append(new MenuItem({
-            label: 'Help', click() {
-                mainWindow.webContents.executeJavaScript("appMenuItemTriggered('Help');");
+        const menuTemplate = [
+            {
+                label: 'File',
+                submenu: [
+                    {
+                        label: 'Exit',
+                        click: function() {
+                            mainWindow.webContents.executeJavaScript("appMenuItemTriggered('Exit');");
+                        }
+                    }
+                ]
+            },
+            {
+                label: 'About',
+                click: function() {
+                    mainWindow.webContents.executeJavaScript("appMenuItemTriggered('About');");
+                }
             }
-        }));
-
+        ];
+        const menu = Menu.buildFromTemplate(menuTemplate);
         mainWindow.setMenu(menu);
         mainWindow.loadURL(appUrl);
 
+        // uncomment to show debug tools
         // mainWindow.webContents.openDevTools();
 
         mainWindow.on('closed', function () {
@@ -76,7 +86,7 @@ app.on('ready', function () {
         });
     };
 
-    var startUp = function () {
+    const startUp = function () {
         requestPromise(appUrl)
             .then(function (htmlString) {
                 console.log('Server started!');
