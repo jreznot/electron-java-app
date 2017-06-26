@@ -25,11 +25,18 @@ app.on('window-all-closed', function () {
 });
 
 app.on('ready', function () {
-    serverProcess = require('child_process')
-        .spawn('cmd.exe', ['/c', 'electron-vaadin.bat'],
-            {
-                cwd: './electron-vaadin/bin'
-            });
+    platform = process.platform;
+    
+    if (platform === 'win32') {
+        serverProcess = require('child_process')
+            .spawn('cmd.exe', ['/c', 'electron-vaadin.bat'],
+                {
+                    cwd: './electron-vaadin/bin'
+                });
+    } else if (platform === 'darwin') {
+        serverProcess = require('child_process')
+            .spawn(app.getAppPath()+'/electron-vaadin/bin/electron-vaadin');
+    }
 
     serverProcess.stdout.on('data', function (data) {
         console.log('Server: ' + data);
