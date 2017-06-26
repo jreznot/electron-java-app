@@ -35,7 +35,7 @@ app.on('ready', function () {
                 });
     } else if (platform === 'darwin') {
         serverProcess = require('child_process')
-            .exec(app.getAppPath()+'/electron-vaadin/bin/electron-vaadin');
+            .spawn(app.getAppPath()+'/electron-vaadin/bin/electron-vaadin');
     }
 
     serverProcess.stdout.on('data', function (data) {
