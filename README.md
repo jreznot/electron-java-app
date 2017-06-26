@@ -20,30 +20,56 @@ Java Desktop Application with HTML 5 UI based on Electron and Vaadin
 
 ## Try it!
 
-__Note:__ These steps now are relevant to Windows only.
+### Preparations
 
 1. Download and install `npm` from https://nodejs.org/en/download/
 2. Install required `npm` modules:
 
         > cd electron-src
         > npm install
+        > cd ..
 
 3. Build java application:
 
+    *Windows*
+
         > gradlew installDist
-        
-4. Run debug version:
+
+    *OS X*
+
+        > ./gradlew installDist        
+
+### Running debug version
+
+*Windows*
 
         > electron-app-debug.bat
+
+*OS X*
+
+        > ./electron-app-debug.bin
+
+### Building standalone app
         
-5. Install electron-packager:
+1. Install electron-packager:
 
         > npm install electron-packager -g
         
-6. Build standalone app:
+2. Build standalone app:
+
+    *Windows*
 
         > electron-app-package.bat
+        
+    Application will be bundled to `electron-src\electron-vaadin-win32-x64`
+    
 
-7. Application will be bundled to `electron-src\electron-vaadin-win32-x64`
+    *OS XM*
+
+        > ./electron-app-package.bin
+
+    Application will be bundled to `electron-src/electron-vaadin-darwin-x64`
+
+## Screenshot
 
 ![Demo Image](/docs/app-window.png?raw=true "Application Window")
