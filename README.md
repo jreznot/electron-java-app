@@ -64,7 +64,7 @@ Java Desktop Application with HTML 5 UI based on Electron and Vaadin
     Application will be bundled to `electron-src\electron-vaadin-win32-x64`
     
 
-    *OS XM*
+    *OS X*
 
         > ./electron-app-package.bin
 
