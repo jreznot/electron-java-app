@@ -57,3 +57,32 @@ targetCompatibility = '1.8'
 configurations.archives.artifacts.removeAll {
     it.file =~ 'tar'
 }
+
+// Prepare files for serving from file system using vaadin:// protocol
+task bundle(group: 'build', dependsOn: installDist) {
+    outputs.dir(project.file('build/install/electron-vaadin/VAADIN'))
+
+    doLast {
+        def compileFiles = project.configurations.getByName('compile').resolve()
+        for (f in compileFiles) {
+            copy{
+                includeEmptyDirs = false
+                from(zipTree(f))
+                into(project.file('build/install/electron-vaadin'))
+                include 'VAADIN/**'
+                exclude 'VAADIN/widgetsets/WEB-INF/**'
+                exclude 'VAADIN/themes/chameleon/**'
+                exclude 'VAADIN/themes/liferay/**'
+                exclude 'VAADIN/themes/reindeer/**'
+                exclude 'VAADIN/themes/runo/**'
+                exclude 'VAADIN/themes/valo/fonts/lato/**'
+                exclude 'VAADIN/themes/valo/fonts/lora/**'
+                exclude 'VAADIN/themes/valo/fonts/roboto/**'
+                exclude 'VAADIN/themes/valo/fonts/source-sans-pro/**'
+                exclude 'VAADIN/**/*.gz'
+                exclude 'VAADIN/**/*.scss'
+                exclude 'VAADIN/**/readme.txt'
+            }
+        }
+    }
+}

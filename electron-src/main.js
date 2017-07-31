@@ -1,4 +1,5 @@
-const {app, BrowserWindow, Menu, MenuItem} = require('electron');
+const {app, session, protocol, BrowserWindow, Menu, MenuItem} = require('electron');
+const path = require('path');
 
 let mainWindow = null;
 let serverProcess = null;
@@ -7,7 +8,7 @@ let serverProcess = null;
 global.callElectronUiApi = function(args) {
     console.log('Electron called from web app with args "' + args + '"');
 
-    if (args && args[0] == 'exit') {
+    if (args && args[0] === 'exit') {
         console.log('Kill server process');
 
         const kill = require('tree-kill');
@@ -35,7 +36,7 @@ app.on('ready', function () {
                 });
     } else if (platform === 'darwin') {
         serverProcess = require('child_process')
-            .spawn(app.getAppPath()+'/electron-vaadin/bin/electron-vaadin');
+            .spawn(app.getAppPath() + '/electron-vaadin/bin/electron-vaadin');
     }
 
     serverProcess.stdout.on('data', function (data) {
@@ -47,7 +48,43 @@ app.on('ready', function () {
     const requestPromise = require('request-promise');
     let appUrl = 'http://localhost:8080';
 
+    function setupVaadinFilesService() {
+        protocol.registerFileProtocol('vaadin', (request, callback) => {
+            console.log(`Vaadin Request URL: ${request.url}`);
+
+            let urlPath = request.url.substr('vaadin://'.length);
+            if (urlPath.indexOf('?') >= 0) {
+                urlPath = urlPath.substr(0, urlPath.indexOf('?'));
+            }
+            if (urlPath.indexOf('#') >= 0) {
+                urlPath = urlPath.substr(0, urlPath.indexOf('#'));
+            }
+            console.log(`Vaadin Request Path: ${urlPath}`);
+
+            const fsPath = path.normalize(`${__dirname}/electron-vaadin/VAADIN/${urlPath}`);
+
+            console.log(`Vaadin Request File: ${fsPath}`);
+
+            callback({path: fsPath});
+        }, (error) => {
+            if (error) console.error('Failed to register protocol');
+        });
+
+        const filter = {
+            urls: ['http://localhost:8080/VAADIN/*']
+        };
+        session.defaultSession.webRequest.onBeforeRequest(filter, (details, callback) => {
+            let vaadinFile = details.url.replace('http://localhost:8080/VAADIN/', '');
+
+            console.log(`Vaadin URL: ${vaadinFile}`);
+
+            callback({cancel: false, redirectURL: 'vaadin://' + vaadinFile})
+        });
+    }
+
     const openWindow = function () {
+        setupVaadinFilesService();
+
         mainWindow = new BrowserWindow({
             title: 'TODO List - Electron Vaadin application',
             width: 500,
@@ -78,7 +115,7 @@ app.on('ready', function () {
         mainWindow.loadURL(appUrl);
 
         // uncomment to show debug tools
-        // mainWindow.webContents.openDevTools();
+        mainWindow.webContents.openDevTools();
 
         mainWindow.on('closed', function () {
             mainWindow = null;
