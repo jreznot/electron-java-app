@@ -33,11 +33,11 @@ Java Desktop Application with HTML 5 UI based on Electron and Vaadin
 
     *Windows*
 
-        > gradlew installDist
+        > gradlew bundle
 
     *OS X*
 
-        > ./gradlew installDist        
+        > ./gradlew bundle        
 
 ### Running debug version
 
