@@ -38,14 +38,14 @@ sourceSets {
 dependencies {
     compile 'ch.qos.logback:logback-classic:1.1.2'
 
-    compile 'org.eclipse.jetty:jetty-server:9.4.0.v20161208'
-    compile 'org.eclipse.jetty:jetty-webapp:9.4.0.v20161208'
-    compile 'org.eclipse.jetty.websocket:websocket-server:9.4.0.v20161208'
+    compile 'org.eclipse.jetty:jetty-server:9.4.6.v20170531'
+    compile 'org.eclipse.jetty:jetty-webapp:9.4.6.v20170531'
+    compile 'org.eclipse.jetty.websocket:websocket-server:9.4.6.v20170531'
 
-    compile 'com.vaadin:vaadin-server:7.7.6'
-    compile 'com.vaadin:vaadin-push:7.7.6'
-    compile 'com.vaadin:vaadin-client-compiled:7.7.6'
-    compile 'com.vaadin:vaadin-themes:7.7.6'
+    compile 'com.vaadin:vaadin-server:8.1.1'
+    compile 'com.vaadin:vaadin-push:8.1.1'
+    compile 'com.vaadin:vaadin-client-compiled:8.1.1'
+    compile 'com.vaadin:vaadin-themes:8.1.1'
 }
 
 applicationName = 'electron-vaadin'

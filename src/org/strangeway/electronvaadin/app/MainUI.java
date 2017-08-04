@@ -2,16 +2,19 @@ package org.strangeway.electronvaadin.app;
 
 import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Theme;
-import com.vaadin.data.Container;
-import com.vaadin.data.util.converter.StringToBooleanConverter;
-import com.vaadin.server.FontAwesome;
+import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.VaadinRequest;
-import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.*;
+import com.vaadin.ui.renderers.TextRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 import elemental.json.Json;
 import elemental.json.JsonArray;
 import elemental.json.JsonString;
+
+import java.util.ArrayList;
+import java.util.Set;
 
 /**
  * @author Yuriy Artamonov
@@ -20,7 +23,7 @@ import elemental.json.JsonString;
 @Theme(ValoTheme.THEME_NAME)
 public class MainUI extends UI {
 
-    private Grid tasksGrid;
+    private Grid<Task> tasksGrid;
 
     @Override
     protected void init(VaadinRequest request) {
@@ -34,6 +37,7 @@ public class MainUI extends UI {
         layout.setSizeFull();
 
         VerticalLayout centerLayout = new VerticalLayout();
+        centerLayout.setMargin(false);
         centerLayout.setSpacing(true);
         centerLayout.setWidth(400, Unit.PIXELS);
         centerLayout.setHeight(100, Unit.PERCENTAGE);
@@ -42,23 +46,29 @@ public class MainUI extends UI {
         titleLabel.setStyleName(ValoTheme.LABEL_H1);
         centerLayout.addComponent(titleLabel);
 
-        Button addButton = new Button("Add", FontAwesome.PLUS);
+        ArrayList<Task> tasks = new ArrayList<>();
+        ListDataProvider<Task> dataProvider =
+                new ListDataProvider<>(tasks);
+
+        Button addButton = new Button("Add", VaadinIcons.PLUS);
         addButton.focus();
         addButton.setStyleName(ValoTheme.BUTTON_PRIMARY);
         addButton.addClickListener(event -> {
-            Object itemId = tasksGrid.addRow(false, "New task");
-            tasksGrid.select(itemId);
+            Task task = new Task(false, "New task");
+            tasks.add(task);
+            dataProvider.refreshAll();
+
+            tasksGrid.select(task);
         });
 
-        Button removeButton = new Button("Remove", FontAwesome.TRASH_O);
+        Button removeButton = new Button("Remove", VaadinIcons.TRASH);
         removeButton.setEnabled(false);
         removeButton.addClickListener(event -> {
-            Object selectedItemId = tasksGrid.getSelectedRow();
-            if (selectedItemId != null) {
-                Container.Indexed ds = tasksGrid.getContainerDataSource();
-                ds.removeItem(selectedItemId);
-                removeButton.setEnabled(false);
-            }
+            Set<Task> selectedItems = tasksGrid.getSelectedItems();
+            tasks.removeAll(selectedItems);
+            dataProvider.refreshAll();
+
+            removeButton.setEnabled(false);
         });
 
         HorizontalLayout buttonsLayout = new HorizontalLayout();
@@ -69,19 +79,31 @@ public class MainUI extends UI {
         centerLayout.addComponent(buttonsLayout);
         centerLayout.setComponentAlignment(buttonsLayout, Alignment.MIDDLE_RIGHT);
 
-        tasksGrid = new Grid();
+        tasksGrid = new Grid<>(Task.class);
+        tasksGrid.setDataProvider(dataProvider);
         tasksGrid.setSizeFull();
-        tasksGrid.setEditorEnabled(true);
+        tasksGrid.getEditor().setEnabled(true);
         tasksGrid.setSelectionMode(Grid.SelectionMode.SINGLE);
 
-        tasksGrid.addColumn("Done", Boolean.class);
-        tasksGrid.getColumn("Done").setWidth(80);
-        tasksGrid.getColumn("Done").setConverter(new StringToBooleanConverter("Yes", "No"));
+        @SuppressWarnings("unchecked")
+        Grid.Column<Task, Boolean> doneColumn = (Grid.Column<Task, Boolean>) tasksGrid.getColumn("done");
+        doneColumn.setEditorComponent(new CheckBox());
 
-        tasksGrid.addColumn("Summary");
+        doneColumn.setCaption("Done")
+                .setWidth(80)
+                .setRenderer(isDone -> {
+                    if (isDone) {
+                        return "Yes";
+                    }
+                    return "No";
+                }, new TextRenderer());
+
+        tasksGrid.getColumn("summary")
+                .setCaption("Summary")
+                .setEditorComponent(new TextField());
 
         tasksGrid.addSelectionListener(event -> {
-            boolean enableRemove = !event.getSelected().isEmpty();
+            boolean enableRemove = !event.getAllSelectedItems().isEmpty();
             removeButton.setEnabled(enableRemove);
         });
 
@@ -138,7 +160,7 @@ public class MainUI extends UI {
 
         content.addComponent(aboutLabel);
 
-        Button okBtn = new Button("Ok", FontAwesome.CHECK);
+        Button okBtn = new Button("Ok", VaadinIcons.CHECK);
         okBtn.focus();
         okBtn.addClickListener(event -> helpWindow.close());
 
@@ -174,7 +196,7 @@ public class MainUI extends UI {
         HorizontalLayout buttonsLayout = new HorizontalLayout();
         buttonsLayout.setSpacing(true);
 
-        Button yesBtn = new Button("Yes", FontAwesome.SIGN_OUT);
+        Button yesBtn = new Button("Yes", VaadinIcons.SIGN_OUT);
         yesBtn.focus();
         yesBtn.addClickListener(event -> {
             confirmationWindow.close();
@@ -182,7 +204,7 @@ public class MainUI extends UI {
         });
         buttonsLayout.addComponent(yesBtn);
 
-        Button noBtn = new Button("No", FontAwesome.CLOSE);
+        Button noBtn = new Button("No", VaadinIcons.CLOSE);
         noBtn.addClickListener(event -> confirmationWindow.close());
         buttonsLayout.addComponent(noBtn);
 
@@ -191,5 +213,31 @@ public class MainUI extends UI {
         confirmationWindow.setContent(layout);
 
         getUI().addWindow(confirmationWindow);
+    }
+
+    public static class Task {
+        private boolean done;
+        private String summary;
+
+        public Task(boolean done, String summary) {
+            this.done = done;
+            this.summary = summary;
+        }
+
+        public String getSummary() {
+            return summary;
+        }
+
+        public void setSummary(String summary) {
+            this.summary = summary;
+        }
+
+        public boolean isDone() {
+            return done;
+        }
+
+        public void setDone(boolean done) {
+            this.done = done;
+        }
     }
 }
