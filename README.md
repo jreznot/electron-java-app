@@ -50,19 +50,18 @@ Java Desktop Application with HTML 5 UI based on Electron and Vaadin
         > ./electron-app-debug.bin
 
 ### Building standalone app
-        
+
 1. Install electron-packager:
 
         > npm install electron-packager -g
-        
+
 2. Build standalone app:
 
     *Windows*
 
         > electron-app-package.bat
-        
+
     Application will be bundled to `electron-src\electron-vaadin-win32-x64`
-    
 
     *OS X*
 

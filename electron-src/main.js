@@ -27,7 +27,7 @@ app.on('window-all-closed', function () {
 
 app.on('ready', function () {
     platform = process.platform;
-    
+
     if (platform === 'win32') {
         serverProcess = require('child_process')
             .spawn('cmd.exe', ['/c', 'electron-vaadin.bat'],
