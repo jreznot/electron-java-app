@@ -2,7 +2,9 @@
   "name": "electron-vaadin",
   "version": "0.1.0",
   "main": "main.js",
-  "license": "Apache 2.0",
+  "license": "Apache-2.0",
+  "description": "Electron Java App Demo",
+  "repository": "https://github.com/jreznot/electron-java-app",
   "devDependencies": {
     "electron": "^1.4.13",
     "request-promise": "^4.1.1",

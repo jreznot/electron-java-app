@@ -1,4 +1,4 @@
-./gradlew installDist
+./gradlew bundle
 rm -R ./electron-src/electron-vaadin-darwin-x64/
 rm -R ./electron.src/electron-vaadin/
 cd electron-src
