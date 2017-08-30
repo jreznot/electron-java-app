@@ -1,4 +1,4 @@
-const {app, session, protocol, BrowserWindow, Menu, MenuItem} = require('electron');
+const {app, session, protocol, BrowserWindow, Menu} = require('electron');
 const path = require('path');
 
 let mainWindow = null;
@@ -45,7 +45,6 @@ app.on('ready', function () {
 
     console.log("Server PID: " + serverProcess.pid);
 
-    const requestPromise = require('request-promise');
     let appUrl = 'http://localhost:8080';
 
     function setupVaadinFilesService() {
@@ -131,14 +130,17 @@ app.on('ready', function () {
     };
 
     const startUp = function () {
-        requestPromise(appUrl)
-            .then(function (htmlString) {
+        const requestPromise = require('minimal-request-promise');
+
+        requestPromise.get(appUrl).then(function (response) {
                 console.log('Server started!');
                 openWindow();
-            })
-            .catch(function (err) {
+            }, function (response) {
                 console.log('Waiting for the server start...');
-                startUp();
+
+                setTimeout(function () {
+                    startUp();
+                }, 200);
             });
     };
 

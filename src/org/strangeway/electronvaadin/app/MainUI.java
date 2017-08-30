@@ -14,6 +14,7 @@ import elemental.json.JsonArray;
 import elemental.json.JsonString;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -68,7 +69,10 @@ public class MainUI extends UI {
             tasks.removeAll(selectedItems);
             dataProvider.refreshAll();
 
-            removeButton.setEnabled(false);
+            Iterator<Task> iterator = dataProvider.getItems().iterator();
+            if (iterator.hasNext()) {
+                tasksGrid.select(iterator.next());
+            }
         });
 
         HorizontalLayout buttonsLayout = new HorizontalLayout();
