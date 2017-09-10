@@ -15,8 +15,9 @@ Java Desktop Application with HTML 5 UI based on Electron and Vaadin
 
 1. Jetty server with Web Sockets enabled
 2. Vaadin UI code in plain Java
-3. Two way communication between Electron and web application using javascript functions
-4. Auto start / stop of server side on application init / exit
+3. Bi-directional WebSocket connection with Vaadin Push and Jetty WebSocket module
+4. Two way communication between Electron and web application using javascript functions
+5. Auto start / stop of server side on application init / exit
 
 ## Try it!
 
