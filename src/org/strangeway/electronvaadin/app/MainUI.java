@@ -1,11 +1,13 @@
 package org.strangeway.electronvaadin.app;
 
 import com.vaadin.annotations.PreserveOnRefresh;
+import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.shared.ui.ContentMode;
+import com.vaadin.shared.ui.ui.Transport;
 import com.vaadin.ui.*;
 import com.vaadin.ui.renderers.TextRenderer;
 import com.vaadin.ui.themes.ValoTheme;
@@ -22,6 +24,7 @@ import java.util.Set;
  */
 @PreserveOnRefresh
 @Theme(ValoTheme.THEME_NAME)
+@Push(transport = Transport.WEBSOCKET)
 public class MainUI extends UI {
 
     private Grid<Task> tasksGrid;

@@ -11,13 +11,13 @@ import javax.servlet.annotation.WebServlet;
 /**
  * @author Yuriy Artamonov
  */
-@WebServlet(value = "/*")
+@WebServlet(value = "/*", asyncSupported = true)
 @VaadinServletConfiguration(productionMode = false, ui = MainUI.class)
 public class AppServlet extends VaadinServlet implements BootstrapListener {
     @Override
     protected void servletInitialized() throws ServletException {
         super.servletInitialized();
-        getService().addSessionInitListener((SessionInitListener) event ->
+        getService().addSessionInitListener(event ->
                 event.getSession().addBootstrapListener(this)
         );
     }
