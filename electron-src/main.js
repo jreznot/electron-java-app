@@ -1,4 +1,4 @@
-const {app, session, protocol, BrowserWindow, Menu} = require('electron');
+const {app, session, protocol, BrowserWindow, Menu, globalShortcut} = require('electron');
 const path = require('path');
 
 let mainWindow = null;
@@ -145,4 +145,17 @@ app.on('ready', function () {
     };
 
     startUp();
+
+    // Register a shortcut listener.
+    const ret = globalShortcut.register('CommandOrControl+Shift+`', () => {
+        console.log('Bring to front shortcut triggered');
+        if (mainWindow) {
+            mainWindow.focus();
+        }
+    })
+});
+
+app.on('will-quit', () => {
+    // Unregister all shortcuts.
+    globalShortcut.unregisterAll();
 });
