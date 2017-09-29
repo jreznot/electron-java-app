@@ -46,6 +46,8 @@ dependencies {
     compile 'com.vaadin:vaadin-push:8.1.3'
     compile 'com.vaadin:vaadin-client-compiled:8.1.3'
     compile 'com.vaadin:vaadin-themes:8.1.3'
+
+    compile 'commons-io:commons-io:2.5'
 }
 
 applicationName = 'electron-vaadin'

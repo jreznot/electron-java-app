@@ -1,0 +1,46 @@
+.window-header {
+    -ms-overflow-style: scrollbar;
+    -webkit-app-region: drag;
+    background-color: #5d5a58;
+}
+
+input[type="submit"],
+input[type="reset"],
+input[type="button"],
+input[type="text"],
+.v-button,
+.v-menubar,
+textarea {
+    -webkit-app-region: no-drag;
+}
+
+.v-menubar.window-title,
+.v-menubar-menuitem-title-menu-item {
+    color: white !important;
+}
+
+.v-button.window-control {
+    border-radius: 0;
+    color: white;
+    width: 45px;
+}
+
+.v-button.window-control:hover {
+    background: #393e43;
+}
+
+.v-button.window-title::after,
+.v-button.window-control::after {
+    box-shadow: none !important;
+}
+
+.v-button.window-close:hover {
+    background-color: red;
+}
+
+.window-content {
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: #5d5a58;
+}

@@ -8,16 +8,30 @@ let serverProcess = null;
 global.callElectronUiApi = function(args) {
     console.log('Electron called from web app with args "' + args + '"');
 
-    if (args && args[0] === 'exit') {
-        console.log('Kill server process');
+    if (args) {
+        if (args[0] === 'exit') {
+            console.log('Kill server process');
 
-        const kill = require('tree-kill');
-        kill(serverProcess.pid, 'SIGTERM', function (err) {
-            console.log('Server process killed');
+            const kill = require('tree-kill');
+            kill(serverProcess.pid, 'SIGTERM', function (err) {
+                console.log('Server process killed');
 
-            serverProcess = null;
-            mainWindow.close();
-        });
+                serverProcess = null;
+                mainWindow.close();
+            });
+        }
+
+        if (args[0] === 'minimize') {
+            mainWindow.minimize();
+        }
+
+        if (args[0] === 'maximize') {
+            if (!mainWindow.isMaximized()) {
+                mainWindow.maximize();
+            } else {
+                mainWindow.unmaximize();
+            }
+        }
     }
 };
 
@@ -87,30 +101,10 @@ app.on('ready', function () {
         mainWindow = new BrowserWindow({
             title: 'TODO List - Electron Vaadin application',
             width: 500,
-            height: 768
+            height: 768,
+            frame: false
         });
 
-        const menuTemplate = [
-            {
-                label: 'File',
-                submenu: [
-                    {
-                        label: 'Exit',
-                        click: function() {
-                            mainWindow.webContents.executeJavaScript("appMenuItemTriggered('Exit');");
-                        }
-                    }
-                ]
-            },
-            {
-                label: 'About',
-                click: function() {
-                    mainWindow.webContents.executeJavaScript("appMenuItemTriggered('About');");
-                }
-            }
-        ];
-        const menu = Menu.buildFromTemplate(menuTemplate);
-        mainWindow.setMenu(menu);
         mainWindow.loadURL(appUrl);
 
         // uncomment to show debug tools

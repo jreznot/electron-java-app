@@ -5,6 +5,7 @@ import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.shared.ui.ui.Transport;
@@ -14,7 +15,11 @@ import com.vaadin.ui.themes.ValoTheme;
 import elemental.json.Json;
 import elemental.json.JsonArray;
 import elemental.json.JsonString;
+import org.apache.commons.io.IOUtils;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
@@ -37,13 +42,22 @@ public class MainUI extends UI {
 
     private void initLayout() {
         VerticalLayout layout = new VerticalLayout();
-        layout.setMargin(true);
+        layout.setMargin(false);
+        layout.setSpacing(false);
         layout.setSizeFull();
 
+        initMenu(layout);
+
+        VerticalLayout windowContent = new VerticalLayout();
+        windowContent.setSizeFull();
+        windowContent.setMargin(false);
+        windowContent.setSpacing(false);
+        windowContent.addStyleName("window-content");
+
         VerticalLayout centerLayout = new VerticalLayout();
-        centerLayout.setMargin(false);
+        centerLayout.setMargin(true);
         centerLayout.setSpacing(true);
-        centerLayout.setWidth(400, Unit.PIXELS);
+        centerLayout.setWidth(500, Unit.PIXELS);
         centerLayout.setHeight(100, Unit.PERCENTAGE);
 
         Label titleLabel = new Label("Active tasks");
@@ -117,10 +131,61 @@ public class MainUI extends UI {
         centerLayout.addComponent(tasksGrid);
         centerLayout.setExpandRatio(tasksGrid, 1);
 
-        layout.addComponent(centerLayout);
-        layout.setComponentAlignment(centerLayout, Alignment.TOP_CENTER);
+        windowContent.addComponent(centerLayout);
+        windowContent.setComponentAlignment(centerLayout, Alignment.TOP_CENTER);
+
+        layout.addComponentsAndExpand(windowContent);
 
         setContent(layout);
+    }
+
+    private void initMenu(VerticalLayout layout) {
+        HorizontalLayout menuLayout = new HorizontalLayout();
+        menuLayout.setSpacing(false);
+        menuLayout.addStyleName("window-header");
+        menuLayout.setWidth("100%");
+
+        MenuBar titleLabel = new MenuBar();
+        titleLabel.addStyleName("window-title");
+        titleLabel.addStyleName(ValoTheme.MENUBAR_BORDERLESS);
+
+        MenuBar.MenuItem mainMenuItem = titleLabel.addItem("Tasks", VaadinIcons.TASKS, null);
+        mainMenuItem.setStyleName("title-menu-item");
+        mainMenuItem.addItem("About", selectedItem -> onMenuAbout());
+        mainMenuItem.addSeparator();
+        mainMenuItem.addItem("Exit", selectedItem -> onWindowExit());
+
+        menuLayout.addComponentsAndExpand(titleLabel);
+        menuLayout.setComponentAlignment(titleLabel, Alignment.MIDDLE_LEFT);
+
+        Button minimizeBtn = new Button(VaadinIcons.MINUS);
+        minimizeBtn.addClickListener(event -> callElectronUiApi(new String[]{"minimize"}));
+        minimizeBtn.addStyleName("window-control");
+        minimizeBtn.addStyleName(ValoTheme.BUTTON_BORDERLESS);
+        minimizeBtn.addStyleName(ValoTheme.BUTTON_ICON_ONLY);
+        minimizeBtn.setDescription("Minimize");
+
+        Button maximizeBtn = new Button(VaadinIcons.PLUS);
+        maximizeBtn.addClickListener(event -> callElectronUiApi(new String[]{"maximize"}));
+        maximizeBtn.addStyleName("window-control");
+        maximizeBtn.addStyleName(ValoTheme.BUTTON_BORDERLESS);
+        maximizeBtn.addStyleName(ValoTheme.BUTTON_ICON_ONLY);
+        maximizeBtn.setDescription("Maximize");
+
+        Button closeBtn = new Button(VaadinIcons.CLOSE);
+        closeBtn.addClickListener(event -> onWindowExit());
+        closeBtn.addStyleName("window-control");
+        closeBtn.addStyleName("window-close");
+        closeBtn.addStyleName(ValoTheme.BUTTON_BORDERLESS);
+        closeBtn.addStyleName(ValoTheme.BUTTON_ICON_ONLY);
+        closeBtn.setDescription("Close");
+
+        menuLayout.addComponents(minimizeBtn, maximizeBtn, closeBtn);
+        menuLayout.setComponentAlignment(minimizeBtn, Alignment.MIDDLE_RIGHT);
+        menuLayout.setComponentAlignment(maximizeBtn, Alignment.MIDDLE_RIGHT);
+        menuLayout.setComponentAlignment(closeBtn, Alignment.MIDDLE_RIGHT);
+
+        layout.addComponent(menuLayout);
     }
 
     private void initElectronApi() {
@@ -136,6 +201,14 @@ public class MainUI extends UI {
             }
         });
         js.addFunction("appWindowExit", arguments -> onWindowExit());
+
+        Page.Styles styles = getPage().getStyles();
+        try {
+            InputStream resource = MainUI.class.getResourceAsStream(
+                    "/org/strangeway/electronvaadin/resources/electron.css");
+            styles.add(IOUtils.toString(resource, StandardCharsets.UTF_8));
+        } catch (IOException ignored) {
+        }
     }
 
     private void callElectronUiApi(String[] args) {
