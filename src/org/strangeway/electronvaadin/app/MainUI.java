@@ -55,6 +55,7 @@ public class MainUI extends UI {
         windowContent.addStyleName("window-content");
 
         VerticalLayout centerLayout = new VerticalLayout();
+        centerLayout.addStyleName("window-inner");
         centerLayout.setMargin(true);
         centerLayout.setSpacing(true);
         centerLayout.setWidth(500, Unit.PIXELS);
@@ -122,6 +123,8 @@ public class MainUI extends UI {
         tasksGrid.getColumn("summary")
                 .setCaption("Summary")
                 .setEditorComponent(new TextField());
+
+        tasksGrid.setColumnOrder("done", "summary");
 
         tasksGrid.addSelectionListener(event -> {
             boolean enableRemove = !event.getAllSelectedItems().isEmpty();

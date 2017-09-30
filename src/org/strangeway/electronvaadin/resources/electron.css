@@ -9,7 +9,7 @@ input[type="reset"],
 input[type="button"],
 input[type="text"],
 .v-button,
-.v-menubar,
+.v-menubar-menuitem-title-menu-item,
 textarea {
     -webkit-app-region: no-drag;
 }
@@ -43,4 +43,13 @@ textarea {
     border-right: 1px solid;
     border-bottom: 1px solid;
     border-color: #5d5a58;
+}
+
+.v-label-h1 {
+    margin-top: 5px !important;
+    margin-bottom: 10px !important;
+}
+
+.window-inner {
+    padding: 15px !important;
 }
