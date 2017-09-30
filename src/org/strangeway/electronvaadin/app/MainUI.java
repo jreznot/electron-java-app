@@ -42,6 +42,7 @@ public class MainUI extends UI {
 
     private void initLayout() {
         VerticalLayout layout = new VerticalLayout();
+        layout.addStyleName("window-root");
         layout.setMargin(false);
         layout.setSpacing(false);
         layout.setSizeFull();

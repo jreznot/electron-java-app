@@ -39,9 +39,9 @@ textarea {
 }
 
 .window-content {
-    border-left: 1px solid;
-    border-right: 1px solid;
-    border-bottom: 1px solid;
+    border-left: .15rem solid;
+    border-right: .15rem solid;
+    border-bottom: .15rem solid;
     border-color: #5d5a58;
 }
 
