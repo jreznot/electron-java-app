@@ -1,7 +1,12 @@
 buildscript {
     repositories {
+        jcenter()
         mavenCentral()
     }
+}
+
+plugins {
+    id "com.moowork.node" version "1.2.0"
 }
 
 allprojects {
@@ -15,6 +20,12 @@ allprojects {
 
 apply plugin: 'java'
 apply plugin: 'application'
+
+node {
+    version = '8.9.1'
+    download = true
+    nodeModulesDir = project.file('electron-src')
+}
 
 sourceSets {
     main {
@@ -42,10 +53,10 @@ dependencies {
     compile 'org.eclipse.jetty:jetty-webapp:9.3.20.v20170531'
     compile 'org.eclipse.jetty.websocket:websocket-server:9.3.20.v20170531'
 
-    compile 'com.vaadin:vaadin-server:8.1.3'
-    compile 'com.vaadin:vaadin-push:8.1.3'
-    compile 'com.vaadin:vaadin-client-compiled:8.1.3'
-    compile 'com.vaadin:vaadin-themes:8.1.3'
+    compile 'com.vaadin:vaadin-server:8.1.6'
+    compile 'com.vaadin:vaadin-push:8.1.6'
+    compile 'com.vaadin:vaadin-client-compiled:8.1.6'
+    compile 'com.vaadin:vaadin-themes:8.1.6'
 
     compile 'commons-io:commons-io:2.5'
 }
@@ -61,13 +72,13 @@ configurations.archives.artifacts.removeAll {
 }
 
 // Prepare files for serving from file system using vaadin:// protocol
-task bundle(group: 'build', dependsOn: installDist) {
+task flatten(group: 'build', dependsOn: installDist) {
     outputs.dir(project.file('build/install/electron-vaadin/VAADIN'))
 
     doLast {
         def compileFiles = project.configurations.getByName('compile').resolve()
         for (f in compileFiles) {
-            copy{
+            copy {
                 includeEmptyDirs = false
                 from(zipTree(f))
                 into(project.file('build/install/electron-vaadin'))
@@ -88,3 +99,90 @@ task bundle(group: 'build', dependsOn: installDist) {
         }
     }
 }
+
+task buildApp(group: 'build', dependsOn: [flatten, npm_install]) {
+    doLast {
+        def targetDir = project.file('electron-src/electron-vaadin')
+
+        project.file('electron-src/electron-vaadin/').deleteDir()
+        copy {
+            from project.file('build/install/electron-vaadin/')
+            into targetDir
+        }
+
+        def osName = System.getProperty('os.name').toLowerCase()
+        def isWindows = osName.contains('windows')
+
+        def appFile = new File(targetDir, 'bin/electron-vaadin')
+        if (!isWindows) {
+            exec {
+                commandLine 'chmod', '+x', appFile.absolutePath
+            }
+        }
+    }
+}
+
+task runApp(group: 'debug', dependsOn: buildApp) {
+    doLast {
+        def osName = System.getProperty('os.name').toLowerCase()
+        def isWindows = osName.contains('windows')
+
+        def localNodeInstallDir = node.workDir.listFiles().find {
+            it.name.startsWith('node-') && it.name.contains(node.version)
+        }
+        def nodeDir = isWindows ? localNodeInstallDir : new File(localNodeInstallDir, 'bin')
+
+        exec {
+            workingDir 'electron-src'
+            environment 'PATH', System.getenv('PATH') + File.pathSeparator + nodeDir.absolutePath
+            if (isWindows) {
+                commandLine 'cmd', '/c', '"./node_modules/.bin/electron" .'
+            } else {
+                commandLine './node_modules/.bin/electron', '.'
+            }
+        }
+    }
+}
+
+task bundleApp(group: 'build', dependsOn: buildApp) {
+    outputs.dir(project.file('build/bundle'))
+
+    doLast {
+        def osName = System.getProperty('os.name').toLowerCase()
+
+        def isWindows = osName.contains('windows')
+
+        def localNodeInstallDir = node.workDir.listFiles().find {
+            it.name.startsWith('node-') && it.name.contains(node.version)
+        }
+        def nodeDir = isWindows ? localNodeInstallDir : new File(localNodeInstallDir, 'bin')
+
+        def targetDir = project.file('build/bundle')
+        if (targetDir.exists()) {
+            targetDir.deleteDir()
+        }
+        targetDir.mkdirs()
+
+        exec {
+            workingDir 'electron-src'
+            environment 'PATH', System.getenv('PATH') + File.pathSeparator + nodeDir.absolutePath
+            if (isWindows) {
+                commandLine 'cmd', '/c', '"./node_modules/.bin/electron-packager" . ' +
+                        '--out=../build/bundle/ ' +
+                        '--icon=icon.ico ' +
+                        '--ignore=README.md ' +
+                        '--ignore=.npmignore ' +
+                        '--ignore=.travis.yml" .'
+            } else {
+                commandLine './node_modules/.bin/electron-packager', '.',
+                        '--icon=icon.ico',
+                        '--out=../build/bundle/',
+                        '--ignore=README.md',
+                        '--ignore=.npmignore',
+                        '--ignore=.travis.yml'
+            }
+        }
+    }
+}
+
+build.dependsOn buildApp

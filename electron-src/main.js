@@ -1,4 +1,4 @@
-const {app, session, protocol, BrowserWindow, Menu, globalShortcut} = require('electron');
+const {app, session, protocol, BrowserWindow, globalShortcut} = require('electron');
 const path = require('path');
 
 let mainWindow = null;
@@ -48,9 +48,15 @@ app.on('ready', function () {
                 {
                     cwd: './electron-vaadin/bin'
                 });
-    } else if (platform === 'darwin') {
+    } else {
         serverProcess = require('child_process')
             .spawn(app.getAppPath() + '/electron-vaadin/bin/electron-vaadin');
+    }
+
+    if (!serverProcess) {
+        console.error('Unable to start server from ' + app.getAppPath());
+        app.quit();
+        return;
     }
 
     serverProcess.stdout.on('data', function (data) {

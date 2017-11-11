@@ -1,9 +1,8 @@
 .idea/
+*.iml
 build/
 .gradle/
-classes/
 out/
 log/
 electron-src/node_modules/
 electron-src/electron-vaadin/
-electron-src/electron-vaadin-*/

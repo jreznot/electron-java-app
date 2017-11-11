@@ -13,6 +13,7 @@ Java Desktop Application with HTML 5 UI based on Electron and Vaadin
 
 ## Features
 
+0. Easy building with Gradle
 1. Jetty server with Web Sockets enabled
 2. Vaadin UI code in plain Java
 3. Bi-directional WebSocket connection with Vaadin Push and Jetty WebSocket module
@@ -24,53 +25,19 @@ Java Desktop Application with HTML 5 UI based on Electron and Vaadin
 
 ### Preparations
 
-1. Download and install `npm` from https://nodejs.org/en/download/
-2. Install required `npm` modules:
+Build java application:
 
-        > cd electron-src
-        > npm install
-        > cd ..
+    > gradlew build
 
-3. Build java application:
+Run debug version:
 
-    *Windows*
-
-        > gradlew bundle
-
-    *OS X*
-
-        > ./gradlew bundle        
-
-### Running debug version
-
-*Windows*
-
-        > electron-app-debug.bat
-
-*OS X*
-
-        > ./electron-app-debug.bin
+    > gradlew runApp
 
 ### Building standalone app
         
-1. Install electron-packager:
+    > gradlew bundleApp
 
-        > npm install electron-packager -g
-        
-2. Build standalone app:
-
-    *Windows*
-
-        > electron-app-package.bat
-        
-    Application will be bundled to `electron-src\electron-vaadin-win32-x64`
-    
-
-    *OS X*
-
-        > ./electron-app-package.bin
-
-    Application will be bundled to `electron-src/electron-vaadin-darwin-x64`
+    Application will be bundled to `build/bundle`
 
 ## Screenshot
 

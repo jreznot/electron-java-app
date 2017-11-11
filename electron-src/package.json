@@ -10,6 +10,7 @@
     "tree-kill": "^1.1.0"
   },
   "devDependencies": {
-    "electron": "^1.7.5"
+    "electron": "^1.7.9",
+    "electron-packager": "^9.1.0"
   }
 }
