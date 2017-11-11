@@ -37,7 +37,7 @@ Run debug version:
         
     > gradlew bundleApp
 
-    Application will be bundled to `build/bundle`
+Application will be bundled to `build/bundle`
 
 ## Screenshot
 
