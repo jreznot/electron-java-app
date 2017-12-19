@@ -1,6 +1,6 @@
 # Electron+Java Demo
 
-Java Desktop Application with HTML 5 UI based on Electron and Vaadin
+Java Desktop Application with HTML 5 UI based on Electron and Vaadin.
 
 ## Uses
 
@@ -20,6 +20,8 @@ Java Desktop Application with HTML 5 UI based on Electron and Vaadin
 4. Two way communication between Electron and web application using javascript functions
 5. Auto start / stop of server side on application init / exit
 6. Custom window header
+
+Want to know how to implement all the features? See complete tutorial: https://github.com/cuba-labs/java-electron-tutorial !
 
 ## Try it!
 
