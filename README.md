@@ -41,7 +41,7 @@ Run debug version:
 
 Application will be bundled to `build/bundle`
 
-If you want to see a real world application that is built with this approach take a look at CUBA Studio https://www.cuba-platform.com/discuss/t/platform-cuba-studio-se-a-desktop-application-based-on-electron/
+If you want to see a real world application that is built with this approach take a look at CUBA Studio https://www.cuba-platform.com/discuss/t/cuba-studio-se-a-desktop-application-based-on-electron/2914
 
 ## Screenshot
 
