@@ -22,7 +22,7 @@ apply plugin: 'java'
 apply plugin: 'application'
 
 node {
-    version = '8.9.1'
+    version = '10.15.3'
     download = true
     nodeModulesDir = project.file('electron-src')
 }
