@@ -175,7 +175,7 @@ task bundleApp(group: 'build', dependsOn: buildApp) {
                         '--ignore=.travis.yml" .'
             } else {
                 commandLine './node_modules/.bin/electron-packager', '.',
-                        '--icon=icon.ico',
+                        '--icon=icon.icns',
                         '--out=../build/bundle/',
                         '--ignore=README.md',
                         '--ignore=.npmignore',
