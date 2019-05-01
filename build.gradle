@@ -151,6 +151,7 @@ task bundleApp(group: 'build', dependsOn: buildApp) {
         def osName = System.getProperty('os.name').toLowerCase()
 
         def isWindows = osName.contains('windows')
+        def isMacOS = osName.contains('darwin')
 
         def localNodeInstallDir = node.workDir.listFiles().find {
             it.name.startsWith('node-') && it.name.contains(node.version)
@@ -173,6 +174,13 @@ task bundleApp(group: 'build', dependsOn: buildApp) {
                         '--ignore=README.md ' +
                         '--ignore=.npmignore ' +
                         '--ignore=.travis.yml" .'
+            } else if (isMacOS) {
+                commandLine './node_modules/.bin/electron-packager', '.',
+                        '--icon=icon.icns',
+                        '--out=../build/bundle/',
+                        '--ignore=README.md',
+                        '--ignore=.npmignore',
+                        '--ignore=.travis.yml'
             } else {
                 commandLine './node_modules/.bin/electron-packager', '.',
                         '--icon=icon.ico',
