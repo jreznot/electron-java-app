@@ -16,4 +16,4 @@ bin/main/org/strangeway/electronvaadin/
 .classpath
 .project
 .settings/
-
+.vscode/
