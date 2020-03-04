@@ -1,0 +1,3 @@
+:host(.window-title) [part="menu-bar-button"] {
+    color: white;
+}

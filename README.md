@@ -9,7 +9,7 @@ Java Desktop Application with HTML 5 UI based on Electron and Vaadin.
 3. Gradle
 4. JDK 8
 5. Jetty HTTP Server
-6. Vaadin Framework
+6. Vaadin 14
 
 ## Features
 
@@ -20,6 +20,7 @@ Java Desktop Application with HTML 5 UI based on Electron and Vaadin.
 4. Two way communication between Electron and web application using javascript functions
 5. Auto start / stop of server side on application init / exit
 6. Custom window header
+7. Menu option to show developer tools only when running in debug mode
 
 Want to know how to implement all the features? See complete tutorial: https://github.com/cuba-labs/java-electron-tutorial !
 
@@ -27,22 +28,27 @@ Want to know how to implement all the features? See complete tutorial: https://g
 
 ### Preparations
 
-Build java application:
-
-    > gradlew build
-
 Run debug version:
 
-    > gradlew runApp
+    }> gradlew runApp
 
 ### Building standalone app
         
-    > gradlew bundleApp
-
+    }> gradlew bundleApp
+    
 Application will be bundled to `build/bundle`
+
+### Run in production mode
+
+    }> gradlew runApp -Pvaadin.productionMode
+    
+Or
+
+    }> gradlew bundleApp -Pvaadin.productionMode
+
 
 If you want to see a real world application that is built with this approach take a look at CUBA Studio https://www.cuba-platform.com/discuss/t/cuba-studio-se-a-desktop-application-based-on-electron/2914
 
 ## Screenshot
 
-![Demo Image](/docs/app-window.png?raw=true "Application Window")
+![Demo Image](./docs/app-window.png?raw=true "Application Window")

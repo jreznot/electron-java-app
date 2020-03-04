@@ -1,36 +1,44 @@
-const {app, session, protocol, BrowserWindow, globalShortcut} = require('electron');
+const {app, session, protocol, BrowserWindow, globalShortcut, dialog} = require('electron');
 const path = require('path');
 
 let mainWindow = null;
 let serverProcess = null;
 
+app.allowRendererProcessReuse = true;
+
 // Provide API for web application
-global.callElectronUiApi = function(args) {
-    console.log('Electron called from web app with args "' + args + '"');
+global.callElectronUiApi = function() {
+    console.log('Electron called from web app with args "' + JSON.stringify(arguments) + '"');
 
-    if (args) {
-        if (args[0] === 'exit') {
-            console.log('Kill server process');
+    if (arguments) {
+        switch (arguments[0]) {
+            case 'exit':
+                console.log('Kill server process');
 
-            const kill = require('tree-kill');
-            kill(serverProcess.pid, 'SIGTERM', function (err) {
-                console.log('Server process killed');
+                const kill = require('tree-kill');
+                kill(serverProcess.pid, 'SIGTERM', function (err) {
+                    console.log('Server process killed');
 
-                serverProcess = null;
-                mainWindow.close();
-            });
-        }
+                    serverProcess = null;
 
-        if (args[0] === 'minimize') {
-            mainWindow.minimize();
-        }
-
-        if (args[0] === 'maximize') {
-            if (!mainWindow.isMaximized()) {
-                mainWindow.maximize();
-            } else {
-                mainWindow.unmaximize();
-            }
+                    if (mainWindow !== null ) {
+                        mainWindow.close();
+                    }
+                });
+                break;
+            case 'minimize':
+                mainWindow.minimize();
+                break;
+            case 'maximize':
+                if (!mainWindow.isMaximized()) {
+                    mainWindow.maximize();
+                } else {
+                    mainWindow.unmaximize();
+                }
+                break;
+            case 'devtools':
+                mainWindow.webContents.openDevTools();
+                break;
         }
     }
 };
@@ -41,7 +49,7 @@ app.on('window-all-closed', function () {
 
 app.on('ready', function () {
     platform = process.platform;
-    
+
     if (platform === 'win32') {
         serverProcess = require('child_process')
             .spawn('cmd.exe', ['/c', 'electron-vaadin.bat'],
@@ -50,71 +58,51 @@ app.on('ready', function () {
                 });
     } else {
         serverProcess = require('child_process')
-            .spawn(app.getAppPath() + '/electron-vaadin/bin/electron-vaadin');
+            .spawn(__dirname + '/electron-vaadin/bin/electron-vaadin');
     }
 
     if (!serverProcess) {
-        console.error('Unable to start server from ' + app.getAppPath());
+        console.error('Unable to start server from ' + __dirname);
         app.quit();
         return;
     }
 
     serverProcess.stdout.on('data', function (data) {
-        console.log('Server: ' + data);
+        process.stdout.write('Server: ' + data);
+    });
+    serverProcess.stderr.on('data', function (data) {
+        process.stderr.write('Server error: ' + data);
+    });
+
+    serverProcess.on('exit', code => {
+        serverProcess = null;
+
+        if (code !== 0) {
+            console.error(`Server stopped unexpectedly with code ${code}`);
+            dialog.showErrorBox("An error occurred", "The server stopped unexpectedly, app will close.");
+        }
+        if (mainWindow !== null ) {
+            mainWindow.close();
+        }
     });
 
     console.log("Server PID: " + serverProcess.pid);
 
     let appUrl = 'http://localhost:8080';
 
-    function setupVaadinFilesService() {
-        protocol.registerFileProtocol('vaadin', (request, callback) => {
-            console.log(`Vaadin Request URL: ${request.url}`);
-
-            let urlPath = request.url.substr('vaadin://'.length);
-            if (urlPath.indexOf('?') >= 0) {
-                urlPath = urlPath.substr(0, urlPath.indexOf('?'));
-            }
-            if (urlPath.indexOf('#') >= 0) {
-                urlPath = urlPath.substr(0, urlPath.indexOf('#'));
-            }
-            console.log(`Vaadin Request Path: ${urlPath}`);
-
-            const fsPath = path.normalize(`${__dirname}/electron-vaadin/VAADIN/${urlPath}`);
-
-            console.log(`Vaadin Request File: ${fsPath}`);
-
-            callback({path: fsPath});
-        }, (error) => {
-            if (error) console.error('Failed to register protocol');
-        });
-
-        const filter = {
-            urls: ['http://localhost:8080/VAADIN/*']
-        };
-        session.defaultSession.webRequest.onBeforeRequest(filter, (details, callback) => {
-            let vaadinFile = details.url.replace('http://localhost:8080/VAADIN/', '');
-
-            console.log(`Vaadin URL: ${vaadinFile}`);
-
-            callback({cancel: false, redirectURL: 'vaadin://' + vaadinFile})
-        });
-    }
-
     const openWindow = function () {
-        setupVaadinFilesService();
-
         mainWindow = new BrowserWindow({
             title: 'TODO List - Electron Vaadin application',
             width: 500,
             height: 768,
-            frame: false
+            frame: false,
+            webPreferences: { nodeIntegration: true }
         });
 
         mainWindow.loadURL(appUrl);
 
         // uncomment to show debug tools
-        // mainWindow.webContents.openDevTools();
+        //mainWindow.webContents.openDevTools();
 
         mainWindow.on('closed', function () {
             mainWindow = null;
@@ -124,7 +112,7 @@ app.on('ready', function () {
             if (serverProcess) {
                 e.preventDefault();
 
-                mainWindow.webContents.executeJavaScript("appWindowExit();");
+                mainWindow.webContents.executeJavaScript("vaadinApi.appWindowExit();");
             }
         });
     };
@@ -140,7 +128,7 @@ app.on('ready', function () {
 
                 setTimeout(function () {
                     startUp();
-                }, 200);
+                }, 1000);
             });
     };
 

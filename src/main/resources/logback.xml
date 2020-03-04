@@ -24,7 +24,9 @@
 
     <logger name="org.eclipse.jetty" level="INFO"/>
 
-    <root level="debug">
+    <logger name="org.strangeway.electronvaadin" level="DEBUG"/>
+
+    <root level="INFO">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="FILE"/>
     </root>

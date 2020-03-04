@@ -1,0 +1,4 @@
+[part~="cell"].task-done {
+    font-weight: 600;
+    color: green;
+}

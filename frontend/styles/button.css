@@ -1,0 +1,15 @@
+:host(.window-close[theme~="tertiary"]):hover {
+}
+
+:host(.window-control) {
+    margin: 0;
+    height: 100%;
+}
+
+:host(.window-control:hover) {
+    background-color: #393e43 !important;
+}
+
+:host(.window-close:hover) {
+    background-color: red !important;
+}

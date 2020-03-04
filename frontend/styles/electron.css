@@ -1,0 +1,33 @@
+.window-header {
+    -ms-overflow-style: scrollbar;
+    -webkit-app-region: drag;
+    background-color: #5d5a58;
+}
+
+input[type="submit"],
+input[type="reset"],
+input[type="button"],
+input[type="text"],
+vaadin-button,
+vaadin-context-menu-item,
+textarea {
+    -webkit-app-region: no-drag;
+}
+
+.window-control {
+    border-radius: 0;
+    color: white;
+    width: 45px;
+}
+
+.window-content {
+    border-left: .15rem solid;
+    border-right: .15rem solid;
+    border-bottom: .15rem solid;
+    border-color: #5d5a58;
+}
+
+h1 {
+    margin-top: 15px;
+    margin-bottom: 10px;
+}
