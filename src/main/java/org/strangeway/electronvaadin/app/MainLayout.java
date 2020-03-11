@@ -72,25 +72,24 @@ public class MainLayout extends VerticalLayout {
 
         initMenu();
 
-        VerticalLayout windowContent = new VerticalLayout();
+        var windowContent = new VerticalLayout();
         windowContent.setSizeFull();
         windowContent.setSpacing(false);
         windowContent.setPadding(false);
         windowContent.addClassName("window-content");
 
-        VerticalLayout centerLayout = new VerticalLayout();
+        var centerLayout = new VerticalLayout();
         centerLayout.addClassName("window-inner");
         centerLayout.setWidthFull();
         centerLayout.setHeightFull();
 
-        H1 titleLabel = new H1("Active tasks");
+        var titleLabel = new H1("Active tasks");
         centerLayout.add(titleLabel);
 
-        ArrayList<Task> tasks = new ArrayList<>();
-        ListDataProvider<Task> dataProvider =
-                new ListDataProvider<>(tasks);
+        var tasks = new ArrayList<Task>();
+        var dataProvider = new ListDataProvider<>(tasks);
 
-        Button addButton = new Button("Add", VaadinIcon.PLUS.create());
+        var addButton = new Button("Add", VaadinIcon.PLUS.create());
         addButton.focus();
         addButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         addButton.addClickListener(event -> {
@@ -103,7 +102,7 @@ public class MainLayout extends VerticalLayout {
             tasksGrid.select(task);
         });
 
-        Button removeButton = new Button("Remove", VaadinIcon.TRASH.create());
+        var removeButton = new Button("Remove", VaadinIcon.TRASH.create());
         removeButton.setEnabled(false);
         removeButton.addClickListener(event -> {
             Set<Task> selectedItems = tasksGrid.getSelectedItems();
@@ -116,7 +115,7 @@ public class MainLayout extends VerticalLayout {
             }
         });
 
-        HorizontalLayout buttonsLayout = new HorizontalLayout();
+        var buttonsLayout = new HorizontalLayout();
         buttonsLayout.setSpacing(true);
         buttonsLayout.add(addButton);
         buttonsLayout.add(removeButton);
@@ -133,15 +132,15 @@ public class MainLayout extends VerticalLayout {
             removeButton.setEnabled(enableRemove);
         });
 
-        Binder<Task> binder = new Binder<>(Task.class);
+        var binder = new Binder<>(Task.class);
         Editor<Task> editor = tasksGrid.getEditor();
         editor.setBinder(binder);
         editor.setBuffered(true);
 
-        Checkbox checkbox = new Checkbox();
+        var checkbox = new Checkbox();
         binder.forField(checkbox).bind("done");
 
-        TextField textField = new TextField();
+        var textField = new TextField();
         textField.setWidthFull();
         binder.forField(textField).asRequired().bind("summary");
 
@@ -181,16 +180,16 @@ public class MainLayout extends VerticalLayout {
     }
 
     private void initMenu() {
-        HorizontalLayout menuLayout = new HorizontalLayout();
+        var menuLayout = new HorizontalLayout();
         menuLayout.setSpacing(false);
         menuLayout.addClassName("window-header");
         menuLayout.setWidth("100%");
 
-        MenuBar titleLabel = new MenuBar();
+        var titleLabel = new MenuBar();
         titleLabel.addClassName("window-title");
         titleLabel.addThemeVariants(MenuBarVariant.LUMO_TERTIARY);
 
-        MenuItem mainMenuItem = addMenuItem(titleLabel, "Tasks", VaadinIcon.TASKS);
+        var mainMenuItem = addMenuItem(titleLabel, "Tasks", VaadinIcon.TASKS);
         mainMenuItem.getSubMenu().addItem("About", selectedItem -> onMenuAbout());
 
         if (!VaadinService.getCurrent().getDeploymentConfiguration().isProductionMode()) {
@@ -202,19 +201,19 @@ public class MainLayout extends VerticalLayout {
 
         menuLayout.addAndExpand(titleLabel);
 
-        Button minimizeBtn = new Button(VaadinIcon.MINUS.create());
+        var minimizeBtn = new Button(VaadinIcon.MINUS.create());
         minimizeBtn.addClickListener(event -> callElectronUiApi("minimize"));
         minimizeBtn.addClassName("window-control");
         minimizeBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_ICON);
         minimizeBtn.getElement().setProperty("title", "Minimize");
 
-        Button maximizeBtn = new Button(VaadinIcon.PLUS.create());
+        var maximizeBtn = new Button(VaadinIcon.PLUS.create());
         maximizeBtn.addClickListener(event -> callElectronUiApi("maximize"));
         maximizeBtn.addClassName("window-control");
         maximizeBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_ICON);
         maximizeBtn.getElement().setProperty("title", "Maximize");
 
-        Button closeBtn = new Button(VaadinIcon.CLOSE.create());
+        var closeBtn = new Button(VaadinIcon.CLOSE.create());
         closeBtn.addClickListener(event -> onWindowExit());
         closeBtn.addClassName("window-control");
         closeBtn.addClassName("window-close");
@@ -227,17 +226,20 @@ public class MainLayout extends VerticalLayout {
     }
 
     private MenuItem addMenuItem(MenuBar menuBar, String caption, VaadinIcon icon) {
-        MenuItem menuItem = menuBar.addItem(caption);
+        var menuItem = menuBar.addItem(caption);
         menuItem.addComponentAsFirst(icon.create());
         return menuItem;
     }
 
     @ClientCallable
     private void appMenuItemTriggered(String menuId) {
-        if ("About".equals(menuId)) {
-            onMenuAbout();
-        } else if ("Exit".equals(menuId)) {
-            onWindowExit();
+        switch (menuId) {
+            case "About":
+                onMenuAbout();
+                break;
+            case "Exit":
+                onWindowExit();
+                break;
         }
     }
 
@@ -251,19 +253,19 @@ public class MainLayout extends VerticalLayout {
     }
 
     private void onMenuAbout() {
-        Dialog helpWindow = new Dialog();
+        var helpWindow = new Dialog();
         helpWindow.setSizeUndefined();
 
-        VerticalLayout content = new VerticalLayout();
+        var content = new VerticalLayout();
         content.setSizeUndefined();
         content.setPadding(false);
 
         content.add(new H2("About"));
 
-        Html aboutLabel = new Html("<span>Electron+Vaadin Demo<br>Authors: Yuriy Artamonov, Erik Lumme</span>");
+        var aboutLabel = new Html("<span>Electron+Vaadin Demo<br>Authors: Yuriy Artamonov, Erik Lumme</span>");
         content.add(aboutLabel);
 
-        Button okBtn = new Button("Ok", VaadinIcon.CHECK.create());
+        var okBtn = new Button("Ok", VaadinIcon.CHECK.create());
         okBtn.focus();
         okBtn.addClickListener(event -> helpWindow.close());
 

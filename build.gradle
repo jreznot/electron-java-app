@@ -69,8 +69,8 @@ dependencies {
 applicationName = 'electron-vaadin'
 mainClassName = 'org.strangeway.electronvaadin.Launcher'
 
-sourceCompatibility = '1.8'
-targetCompatibility = '1.8'
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
 
 configurations.archives.artifacts.removeAll {
     it.file =~ 'tar'
@@ -117,10 +117,14 @@ task runApp(group: 'debug', dependsOn: [buildApp, vaadinPrepareFrontend]) {
         def isWindows = osName.contains('windows')
 
         def nodeDir = isWindows ? new File('node') : new File('node', 'bin')
+        def javaHome = System.getenv('JAVA_HOME')
 
         exec {
             workingDir 'electron-src'
             environment 'PATH', System.getenv('PATH') + File.pathSeparator + nodeDir.absolutePath
+            if (!javaHome.isBlank()) {
+                environment 'JAVA_HOME', System.getenv('JAVA_HOME')
+            }
             if (isWindows) {
                 commandLine 'cmd', '/c', '"./node_modules/.bin/electron" .'
             } else {

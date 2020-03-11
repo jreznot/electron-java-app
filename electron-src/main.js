@@ -1,5 +1,4 @@
-const {app, session, protocol, BrowserWindow, globalShortcut, dialog} = require('electron');
-const path = require('path');
+const {app, BrowserWindow, globalShortcut, dialog} = require('electron');
 
 let mainWindow = null;
 let serverProcess = null;
@@ -18,7 +17,7 @@ global.callElectronUiApi = function () {
                 expectedKill = true;
 
                 const kill = require('tree-kill');
-                kill(serverProcess.pid, 'SIGTERM', function (err) {
+                kill(serverProcess.pid, 'SIGTERM', function () {
                     console.log('Server process killed');
 
                     serverProcess = null;
@@ -142,7 +141,7 @@ app.on('ready', function () {
     startUp();
 
     // Register a shortcut listener.
-    const ret = globalShortcut.register('CommandOrControl+Shift+`', () => {
+    globalShortcut.register('CommandOrControl+Shift+`', () => {
         console.log('Bring to front shortcut triggered');
         if (mainWindow) {
             mainWindow.focus();

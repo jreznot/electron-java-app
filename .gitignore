@@ -1,6 +1,5 @@
-.idea/
-*.iml
 build/
+.idea/workspace.xml
 .gradle/
 out/
 log/
