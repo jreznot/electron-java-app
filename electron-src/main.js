@@ -8,14 +8,14 @@ let expectedKill = false;
 app.allowRendererProcessReuse = true;
 
 // Provide API for web application
-global.callElectronUiApi = function() {
+global.callElectronUiApi = function () {
     console.log('Electron called from web app with args "' + JSON.stringify(arguments) + '"');
 
     if (arguments) {
         switch (arguments[0]) {
             case 'exit':
                 console.log('Kill server process');
-				expectedKill = true;
+                expectedKill = true;
 
                 const kill = require('tree-kill');
                 kill(serverProcess.pid, 'SIGTERM', function (err) {
@@ -23,7 +23,7 @@ global.callElectronUiApi = function() {
 
                     serverProcess = null;
 
-                    if (mainWindow !== null ) {
+                    if (mainWindow !== null) {
                         mainWindow.close();
                     }
                 });
@@ -77,20 +77,18 @@ app.on('ready', function () {
     });
 
     serverProcess.on('exit', code => {
-		
-		if (expectedKill) {
-			return;
-		}
-		
+        if (expectedKill) {
+            return;
+        }
+
         serverProcess = null;
-		
-		console.warn(code);
+        console.warn(code);
 
         if (code !== 0) {
             console.error(`Server stopped unexpectedly with code ${code}`);
             dialog.showErrorBox("An error occurred", "The server stopped unexpectedly, app will close.");
         }
-        if (mainWindow !== null ) {
+        if (mainWindow !== null) {
             mainWindow.close();
         }
     });
@@ -105,7 +103,7 @@ app.on('ready', function () {
             width: 500,
             height: 768,
             frame: false,
-            webPreferences: { nodeIntegration: true }
+            webPreferences: {nodeIntegration: true}
         });
 
         mainWindow.loadURL(appUrl);
@@ -130,15 +128,15 @@ app.on('ready', function () {
         const requestPromise = require('minimal-request-promise');
 
         requestPromise.get(appUrl).then(function (response) {
-                console.log('Server started!');
-                openWindow();
-            }, function (response) {
-                console.log('Waiting for the server start...');
+            console.log('Server started!');
+            openWindow();
+        }, function (response) {
+            console.log('Waiting for the server start...');
 
-                setTimeout(function () {
-                    startUp();
-                }, 1000);
-            });
+            setTimeout(function () {
+                startUp();
+            }, 1000);
+        });
     };
 
     startUp();

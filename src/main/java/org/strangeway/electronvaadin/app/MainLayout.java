@@ -1,10 +1,5 @@
 package org.strangeway.electronvaadin.app;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Set;
-
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.ClientCallable;
 import com.vaadin.flow.component.Html;
@@ -36,6 +31,11 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.shared.ui.Transport;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * @author Yuriy Artamonov
@@ -225,7 +225,7 @@ public class MainLayout extends VerticalLayout {
 
         add(menuLayout);
     }
-    
+
     private MenuItem addMenuItem(MenuBar menuBar, String caption, VaadinIcon icon) {
         MenuItem menuItem = menuBar.addItem(caption);
         menuItem.addComponentAsFirst(icon.create());
@@ -313,6 +313,7 @@ public class MainLayout extends VerticalLayout {
         confirmDialog.open();
     }
 
+    @SuppressWarnings("unused")
     public static class Task {
         private boolean done;
         private String summary;

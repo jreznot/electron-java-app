@@ -21,7 +21,6 @@ import org.slf4j.LoggerFactory;
  * @author Erik Lumme
  */
 public class Launcher {
-
     private static final Logger log = LoggerFactory.getLogger(Launcher.class);
 
     public static void main(String[] args) throws Exception {
@@ -29,7 +28,7 @@ public class Launcher {
 
         Server server = new Server(8080);
 
-        final WebAppContext context = new WebAppContext();
+        WebAppContext context = new WebAppContext();
         context.setBaseResource(findWebRoot());
         context.addServlet(VaadinServlet.class, "/*");
         context.setContextPath("/");
@@ -43,7 +42,7 @@ public class Launcher {
         SessionHandler sessions = new SessionHandler();
         context.setSessionHandler(sessions);
 
-        final Configuration.ClassList classList = Configuration.ClassList.setServerDefault(server);
+        Configuration.ClassList classList = Configuration.ClassList.setServerDefault(server);
         classList.addBefore(JettyWebXmlConfiguration.class.getName(), AnnotationConfiguration.class.getName());
         WebSocketServerContainerInitializer.initialize(context); // fixes IllegalStateException: Unable to configure jsr356 at that stage. ServerContainer is null
 
@@ -60,11 +59,11 @@ public class Launcher {
     private static Resource findWebRoot() throws MalformedURLException {
         // don't look up directory as a resource, it's unreliable: https://github.com/eclipse/jetty.project/issues/4173#issuecomment-539769734
         // instead we'll look up the /webapp/ROOT and retrieve the parent folder from that.
-        final URL f = Launcher.class.getResource("/webapp/ROOT");
+        URL f = Launcher.class.getResource("/webapp/ROOT");
         if (f == null) {
             throw new IllegalStateException("Invalid state: the resource /webapp/ROOT doesn't exist, has webapp been packaged in as a resource?");
         }
-        final String url = f.toString();
+        String url = f.toString();
         if (!url.endsWith("/ROOT")) {
             throw new RuntimeException("Parameter url: invalid value " + url + ": doesn't end with /ROOT");
         }
