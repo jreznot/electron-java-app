@@ -14,7 +14,7 @@ plugins {
 def jettyVersion = "9.4.27.v20200227"
 
 allprojects {
-    group = 'org.org.strangeway'
+    group = 'org.strangeway'
     version = '0.2'
 
     repositories {
