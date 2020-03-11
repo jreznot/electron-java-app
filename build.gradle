@@ -6,25 +6,20 @@ buildscript {
 }
 
 plugins {
-    id "com.moowork.node" version "1.2.0"
+    id 'java'
+    id 'application'
+    id 'com.vaadin' version '0.6.0'
 }
+
+def jettyVersion = "9.4.27.v20200227"
 
 allprojects {
     group = 'org.strangeway'
-    version = '0.1'
+    version = '0.2'
 
     repositories {
         mavenCentral()
     }
-}
-
-apply plugin: 'java'
-apply plugin: 'application'
-
-node {
-    version = '10.15.3'
-    download = true
-    nodeModulesDir = project.file('electron-src')
 }
 
 sourceSets {
@@ -46,19 +41,30 @@ sourceSets {
     }
 }
 
+node {
+    nodeModulesDir = project.file('electron-src')
+}
+
 dependencies {
-    compile 'ch.qos.logback:logback-classic:1.1.2'
+    implementation enforcedPlatform('com.vaadin:vaadin-bom:14.1.17')
 
-    compile 'org.eclipse.jetty:jetty-server:9.3.20.v20170531'
-    compile 'org.eclipse.jetty:jetty-webapp:9.3.20.v20170531'
-    compile 'org.eclipse.jetty.websocket:websocket-server:9.3.20.v20170531'
+    // Vaadin 14
+    implementation("com.vaadin:vaadin-core") {
+        // Webjars are only needed when running in Vaadin 13 compatibility mode
+        ["com.vaadin.webjar", "org.webjars.bowergithub.insites",
+         "org.webjars.bowergithub.polymer", "org.webjars.bowergithub.polymerelements",
+         "org.webjars.bowergithub.vaadin", "org.webjars.bowergithub.webcomponents"]
+                .forEach { group -> exclude(group: group) }
+    }
+    implementation "javax.servlet:javax.servlet-api:3.1.0"
 
-    compile 'com.vaadin:vaadin-server:8.1.6'
-    compile 'com.vaadin:vaadin-push:8.1.6'
-    compile 'com.vaadin:vaadin-client-compiled:8.1.6'
-    compile 'com.vaadin:vaadin-themes:8.1.6'
+    implementation 'ch.qos.logback:logback-classic:1.2.3'
 
-    compile 'commons-io:commons-io:2.5'
+    implementation "org.eclipse.jetty:jetty-annotations:${jettyVersion}"
+    implementation "org.eclipse.jetty:jetty-continuation:${jettyVersion}"
+    implementation "org.eclipse.jetty:jetty-server:${jettyVersion}"
+    implementation "org.eclipse.jetty:jetty-webapp:${jettyVersion}"
+    implementation "org.eclipse.jetty.websocket:javax-websocket-server-impl:${jettyVersion}"
 }
 
 applicationName = 'electron-vaadin'
@@ -71,36 +77,16 @@ configurations.archives.artifacts.removeAll {
     it.file =~ 'tar'
 }
 
-// Prepare files for serving from file system using vaadin:// protocol
-task flatten(group: 'build', dependsOn: installDist) {
-    outputs.dir(project.file('build/install/electron-vaadin/VAADIN'))
-
-    doLast {
-        def compileFiles = project.configurations.getByName('compile').resolve()
-        for (f in compileFiles) {
-            copy {
-                includeEmptyDirs = false
-                from(zipTree(f))
-                into(project.file('build/install/electron-vaadin'))
-                include 'VAADIN/**'
-                exclude 'VAADIN/widgetsets/WEB-INF/**'
-                exclude 'VAADIN/themes/chameleon/**'
-                exclude 'VAADIN/themes/liferay/**'
-                exclude 'VAADIN/themes/reindeer/**'
-                exclude 'VAADIN/themes/runo/**'
-                exclude 'VAADIN/themes/valo/fonts/lato/**'
-                exclude 'VAADIN/themes/valo/fonts/lora/**'
-                exclude 'VAADIN/themes/valo/fonts/roboto/**'
-                exclude 'VAADIN/themes/valo/fonts/source-sans-pro/**'
-                exclude 'VAADIN/**/*.gz'
-                exclude 'VAADIN/**/*.scss'
-                exclude 'VAADIN/**/readme.txt'
-            }
-        }
-    }
+/**
+ * Installs Node and any dependencies.
+ *
+ * Runs automatically on build only when the electron-src/node_modules/.bin/electron file is not present,
+ * as it is required even in development mode.
+ */
+task setupNode(group: 'build', dependsOn: [vaadinPrepareNode, npm_install]) {
 }
 
-task buildApp(group: 'build', dependsOn: [flatten, npm_install]) {
+task buildApp(group: 'build', dependsOn: installDist) {
     doLast {
         def targetDir = project.file('electron-src/electron-vaadin')
 
@@ -121,16 +107,17 @@ task buildApp(group: 'build', dependsOn: [flatten, npm_install]) {
         }
     }
 }
+if (!new File('electron-src/node_modules/.bin/electron').exists()) {
+    buildApp.dependsOn setupNode
+}
+build.dependsOn buildApp
 
-task runApp(group: 'debug', dependsOn: buildApp) {
+task runApp(group: 'debug', dependsOn: [buildApp, vaadinPrepareFrontend]) {
     doLast {
         def osName = System.getProperty('os.name').toLowerCase()
         def isWindows = osName.contains('windows')
 
-        def localNodeInstallDir = node.workDir.listFiles().find {
-            it.name.startsWith('node-') && it.name.contains(node.version)
-        }
-        def nodeDir = isWindows ? localNodeInstallDir : new File(localNodeInstallDir, 'bin')
+        def nodeDir = isWindows ? new File('node') : new File('node', 'bin')
 
         exec {
             workingDir 'electron-src'
@@ -153,10 +140,7 @@ task bundleApp(group: 'build', dependsOn: buildApp) {
         def isWindows = osName.contains('windows')
         def isMacOS = osName.contains('darwin')
 
-        def localNodeInstallDir = node.workDir.listFiles().find {
-            it.name.startsWith('node-') && it.name.contains(node.version)
-        }
-        def nodeDir = isWindows ? localNodeInstallDir : new File(localNodeInstallDir, 'bin')
+        def nodeDir = isWindows ? new File('node') : new File('node', 'bin')
 
         def targetDir = project.file('build/bundle')
         if (targetDir.exists()) {
@@ -193,4 +177,3 @@ task bundleApp(group: 'build', dependsOn: buildApp) {
     }
 }
 
-build.dependsOn buildApp

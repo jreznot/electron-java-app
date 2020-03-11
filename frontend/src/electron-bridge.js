@@ -4,5 +4,5 @@ if (window.require) {
 } else {
     window.callElectronUiApi = function (args) {
     };
-    console.log("Electron bridge is not available");
+    console.error("Electron bridge is not available");
 }

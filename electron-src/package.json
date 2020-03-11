@@ -1,16 +1,16 @@
 {
   "name": "electron-vaadin",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "main": "main.js",
   "license": "Apache-2.0",
   "description": "Electron Java App Demo",
   "repository": "https://github.com/jreznot/electron-java-app",
   "dependencies": {
-    "minimal-request-promise": "^1.4.0",
-    "tree-kill": "^1.1.0"
+    "minimal-request-promise": "^1.5.0",
+    "tree-kill": "^1.2.2"
   },
   "devDependencies": {
-    "electron": "^4.1.4",
-    "electron-packager": "^13.0.1"
+    "electron": "^8.0.3",
+    "electron-packager": "^14.2.1"
   }
 }
