@@ -1,3 +1,4 @@
 :host(.window-title) [part="menu-bar-button"] {
     color: white;
+    -webkit-app-region: no-drag;
 }

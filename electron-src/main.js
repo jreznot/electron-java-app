@@ -3,6 +3,7 @@ const path = require('path');
 
 let mainWindow = null;
 let serverProcess = null;
+let expectedKill = false;
 
 app.allowRendererProcessReuse = true;
 
@@ -14,6 +15,7 @@ global.callElectronUiApi = function() {
         switch (arguments[0]) {
             case 'exit':
                 console.log('Kill server process');
+				expectedKill = true;
 
                 const kill = require('tree-kill');
                 kill(serverProcess.pid, 'SIGTERM', function (err) {
@@ -75,7 +77,14 @@ app.on('ready', function () {
     });
 
     serverProcess.on('exit', code => {
+		
+		if (expectedKill) {
+			return;
+		}
+		
         serverProcess = null;
+		
+		console.warn(code);
 
         if (code !== 0) {
             console.error(`Server stopped unexpectedly with code ${code}`);

@@ -80,8 +80,8 @@ public class MainLayout extends VerticalLayout {
 
         VerticalLayout centerLayout = new VerticalLayout();
         centerLayout.addClassName("window-inner");
-        centerLayout.setWidth("500px");
-        centerLayout.setHeight("100%");
+        centerLayout.setWidthFull();
+        centerLayout.setHeightFull();
 
         H1 titleLabel = new H1("Active tasks");
         centerLayout.add(titleLabel);
