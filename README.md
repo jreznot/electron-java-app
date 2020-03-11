@@ -7,7 +7,7 @@ Java Desktop Application with HTML 5 UI based on Electron and Vaadin.
 1. Node JS
 2. Electron
 3. Gradle
-4. JDK 8
+4. JDK 11
 5. Jetty HTTP Server
 6. Vaadin 14
 
