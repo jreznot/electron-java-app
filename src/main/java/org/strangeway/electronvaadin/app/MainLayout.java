@@ -14,7 +14,6 @@ import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.grid.editor.Editor;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Hr;
@@ -34,8 +33,6 @@ import com.vaadin.flow.shared.ui.Transport;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Set;
 
 /**
  * @author Yuriy Artamonov
@@ -93,7 +90,7 @@ public class MainLayout extends VerticalLayout {
         addButton.focus();
         addButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         addButton.addClickListener(event -> {
-            Task task = new Task(false, "New task");
+            var task = new Task(false, "New task");
             tasks.add(task);
 
             tasksGrid.getEditor().save();
@@ -105,11 +102,11 @@ public class MainLayout extends VerticalLayout {
         var removeButton = new Button("Remove", VaadinIcon.TRASH.create());
         removeButton.setEnabled(false);
         removeButton.addClickListener(event -> {
-            Set<Task> selectedItems = tasksGrid.getSelectedItems();
+            var selectedItems = tasksGrid.getSelectedItems();
             tasks.removeAll(selectedItems);
             dataProvider.refreshAll();
 
-            Iterator<Task> iterator = dataProvider.getItems().iterator();
+            var iterator = dataProvider.getItems().iterator();
             if (iterator.hasNext()) {
                 tasksGrid.select(iterator.next());
             }
@@ -128,12 +125,12 @@ public class MainLayout extends VerticalLayout {
         tasksGrid.setSizeFull();
         tasksGrid.setSelectionMode(Grid.SelectionMode.SINGLE);
         tasksGrid.addSelectionListener(event -> {
-            boolean enableRemove = !event.getAllSelectedItems().isEmpty();
+            var enableRemove = !event.getAllSelectedItems().isEmpty();
             removeButton.setEnabled(enableRemove);
         });
 
         var binder = new Binder<>(Task.class);
-        Editor<Task> editor = tasksGrid.getEditor();
+        var editor = tasksGrid.getEditor();
         editor.setBinder(binder);
         editor.setBuffered(true);
 
@@ -284,17 +281,17 @@ public class MainLayout extends VerticalLayout {
         if (confirmDialog == null) {
             confirmDialog = new Dialog();
 
-            VerticalLayout layout = new VerticalLayout(new H2("Exit confirmation"));
+            var layout = new VerticalLayout(new H2("Exit confirmation"));
             layout.setPadding(false);
 
-            Span confirmationText = new Span("Are you sure?");
+            var confirmationText = new Span("Are you sure?");
             confirmationText.setSizeUndefined();
             layout.add(confirmationText);
 
-            HorizontalLayout buttonsLayout = new HorizontalLayout();
+            var buttonsLayout = new HorizontalLayout();
             buttonsLayout.setSpacing(true);
 
-            Button yesBtn = new Button("Yes", VaadinIcon.SIGN_OUT.create());
+            var yesBtn = new Button("Yes", VaadinIcon.SIGN_OUT.create());
             yesBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
             yesBtn.addClickListener(event -> {
                 confirmDialog.close();
@@ -302,7 +299,7 @@ public class MainLayout extends VerticalLayout {
             });
             buttonsLayout.add(yesBtn);
 
-            Button noBtn = new Button("No", VaadinIcon.CLOSE.create());
+            var noBtn = new Button("No", VaadinIcon.CLOSE.create());
             noBtn.addClickListener(event -> confirmDialog.close());
             buttonsLayout.add(noBtn);
 
