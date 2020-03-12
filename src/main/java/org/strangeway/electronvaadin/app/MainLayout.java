@@ -143,7 +143,7 @@ public class MainLayout extends VerticalLayout {
 
         tasksGrid.addItemDoubleClickListener(e -> {
             if (tasksGrid.getEditor().isOpen()) {
-                Task item = tasksGrid.getEditor().getItem();
+                var item = tasksGrid.getEditor().getItem();
                 tasksGrid.getEditor().save();
                 if (e.getItem().equals(item)) {
                     return;
