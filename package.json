@@ -4,7 +4,8 @@
   "dependencies": {
     "@polymer/polymer": "3.2.0",
     "@webcomponents/webcomponentsjs": "^2.2.10",
-    "@vaadin/flow-deps": "./target/frontend"
+    "minimist": ">=0.2.1",
+    "acorn": ">=6.4.1"
   },
   "devDependencies": {
     "webpack": "4.30.0",
