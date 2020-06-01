@@ -49,6 +49,10 @@ Or
 
 If you want to see a real world application that is built with this approach take a look at CUBA Studio https://www.cuba-platform.com/discuss/t/cuba-studio-se-a-desktop-application-based-on-electron/2914
 
+## If you want to support the project
+
+<a href="https://www.buymeacoffee.com/jreznot" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
+
 ## Screenshot
 
 ![Demo Image](./docs/app-window.png?raw=true "Application Window")
