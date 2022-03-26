@@ -4,7 +4,7 @@
   "dependencies": {
     "@polymer/polymer": "3.2.0",
     "@webcomponents/webcomponentsjs": "^2.2.10",
-    "minimist": ">=0.2.1",
+    "minimist": ">=1.2.6",
     "acorn": ">=6.4.1"
   },
   "devDependencies": {
